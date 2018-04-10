@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -14,13 +16,20 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainScreen extends AppCompatActivity
 {
     private static final int RESULT_LOAD_IMAGE = 2;
     private static final int REQUEST_IMAGE_CAPTURE = 3;
+
+    Uri photoUri = null;
+    String mCurrentPhotoPath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -53,78 +62,85 @@ public class MainScreen extends AppCompatActivity
 
     public void CallGallery()
     {
-    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-    // Show only images, no videos or anything else
-     /*   intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        // Always show the chooser (if there are multiple options available)
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);*/
-    startActivityForResult(intent, RESULT_LOAD_IMAGE);
+    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI); // Show only images, no videos or anything else
+    startActivityForResult(intent, RESULT_LOAD_IMAGE);  //start the activity of the phone gallery
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+       // super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data.getData() != null) {
-
-            Uri uri = data.getData();
-           /* String[] filePathColumn = { MediaStore.Images.Media.DATA };
-            Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();*/
-            try {
-                Bitmap bitmap = getBitmapFromUri(uri);
-                //Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-
-                // Log.d(TAG, String.valueOf(bitmap));
-
-         /*   ImageView imageView = (ImageView) findViewById(R.id.imageViewFilter);
-           // Picasso.get().load(uri).into(imageView);
-            imageView.setImageBitmap(bitmap);
-            Intent intent = new Intent(this, FilterChooser.class);
-            startActivity(intent);*/
+        //checking if its the gallery intent
+            Uri uri = data.getData();   //get the data into a local variable
+            /*try {
+                Bitmap bitmap = getBitmapFromUri(uri);  //convert the uri to a bitmap
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                byte[] byteArray = stream.toByteArray();
-                Intent intent = new Intent(this, FilterChooser.class);
-                intent.putExtra("picture", byteArray);
-                startActivityForResult(intent, RESULT_LOAD_IMAGE);
+                byte[] byteArray = stream.toByteArray();    //convert the stream to byte array
+                Intent intent = new Intent(this, FilterChooser.class); //creating the intent to switch to the FilterChooser activity
+                intent.putExtra("picture", byteArray);  //add the image to the intent
+                startActivityForResult(intent, RESULT_LOAD_IMAGE);  //starting the intent
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
+
+            Intent intent = new Intent(this, FilterChooser.class); //creating the intent to switch to the FilterChooser activity
+            intent.putExtra("imageUri", uri.toString());  //add the image to the intent
+            startActivityForResult(intent, RESULT_LOAD_IMAGE);  //starting the intent
         }
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            //ImageView imageView = (ImageView) findViewById(R.id.imageViewFilter);
-            //imageView.setImageBitmap(imageBitmap);
-
-            //Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        //checking if its the camera intent
+          /*  Bundle extras = data.getExtras();   //get the image in an exrta type
+            Bitmap imageBitmap = (Bitmap) extras.get("data");   //converting to bitmap*/
+            try
+            {
+                Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),Uri.parse(mCurrentPhotoPath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+          /*  ByteArrayOutputStream stream = new ByteArrayOutputStream();
             imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] byteArray = stream.toByteArray();
-            Intent intent = new Intent(this, FilterChooser.class);
-            intent.putExtra("picture", byteArray);
-            startActivityForResult(intent, RESULT_LOAD_IMAGE);
+            byte[] byteArray = stream.toByteArray();    //convert the stream to byte array*/
+            Intent intent = new Intent(this, FilterChooser.class);  //creating the intent to switch to the FilterChooser activity
+            intent.putExtra("imageUri", photoUri.toString());  //add the image to the intent
+            startActivityForResult(intent, RESULT_LOAD_IMAGE);  //starting the intent
         }
     }
 
-    private Bitmap getBitmapFromUri(Uri uri)throws IOException{
-        ParcelFileDescriptor parcelFileDescriptor =
-                getContentResolver().openFileDescriptor(uri, "r");
-        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-        parcelFileDescriptor.close();
-        return image;
+    public void CallCamera() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) // Ensure that there's a camera activity to handle the intent
+        {
+
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+                photoUri = FileProvider.getUriForFile(MainScreen.this, "com.stylizedphotos.stylizedphotos.provider", photoFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (photoFile != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);   //adding to the intent the request for full image and the uri for where to store it
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);   //starting the intent
+            }
+        }
     }
 
-    public void CallCamera()
+    private File createImageFile() throws IOException
     {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null)
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 }

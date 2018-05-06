@@ -94,7 +94,7 @@ public class MainScreen extends AppCompatActivity
           /*  Bundle extras = data.getExtras();   //get the image in an exrta type
             Bitmap imageBitmap = (Bitmap) extras.get("data");   //converting to bitmap*/
             try
-            {
+            {//needs to be delleted
                 Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),Uri.parse(mCurrentPhotoPath));
             } catch (IOException e) {
                 e.printStackTrace();

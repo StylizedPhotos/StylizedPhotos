@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class FilterDemo {
     private Bitmap image;
-    ArrayList<Slider> slider_array;
+    public ArrayList<Slider> slider_array;
 
     FilterDemo(Bitmap image)
     {
@@ -17,6 +17,12 @@ public class FilterDemo {
         Slider s3 = new Slider("s3",6,0);
         slider_array.add(s3);
         this.image = image.copy(image.getConfig(),true);
+        Bitmap Filtered_image = FilterFuncation(image);
+    }
+
+    Bitmap FilterFuncation(Bitmap image)
+    {
+        return image;
     }
 
 }

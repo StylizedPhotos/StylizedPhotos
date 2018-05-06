@@ -22,7 +22,7 @@ public class FilterChooser extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter_chooser);
         Bundle extras = getIntent().getExtras();
-        Uri imageUri = Uri.parse(extras.getString("imageUri"));
+        final Uri imageUri = Uri.parse(extras.getString("imageUri"));
 
         //Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         Bitmap bitmap = null;  //convert the uri to a bitmap
@@ -39,6 +39,7 @@ public class FilterChooser extends AppCompatActivity
         FilterButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), FilterScreen.class);
+                intent.putExtra("imageUri", imageUri.toString());
                 startActivityForResult(intent, RESULT_OPEN_FILTER_SCREEN);
             }
         });

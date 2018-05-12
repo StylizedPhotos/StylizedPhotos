@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class FilterScreen extends AppCompatActivity {
-    private Bitmap image;
+    public ImageView image_view;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,8 +32,7 @@ public class FilterScreen extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ImageView image = (ImageView) findViewById(R.id.imageViewFilter);
-        image.setImageBitmap(bitmap);
+        RefreshImage(bitmap);
 
        /* Intent intent = new Intent(this, FilterDemo.class);  //creating the intent to switch to the FilterChooser activity
         startActivity(intent);  //starting the intent*/
@@ -55,5 +54,10 @@ public class FilterScreen extends AppCompatActivity {
         Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
         parcelFileDescriptor.close();
         return image;
+    }
+    public void RefreshImage (Bitmap bitmap)
+    {
+        image_view = (ImageView) findViewById(R.id.imageViewFilter);
+        image_view.setImageBitmap(bitmap);
     }
 }

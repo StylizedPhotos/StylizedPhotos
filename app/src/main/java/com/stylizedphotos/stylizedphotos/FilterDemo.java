@@ -14,18 +14,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class FilterDemo {
-    private Bitmap imageloc;
     public ArrayList<SeekBar> slider_array = new ArrayList<SeekBar>();
     public ArrayList<TextView> names = new ArrayList<TextView>();
 
-    FilterDemo(final Bitmap image, Context context) {
-        SeekBar s1 = new SeekBar(context);
+    FilterDemo(final Bitmap bitmap, final FilterScreen filterScreen) {
+        SeekBar s1 = new SeekBar(filterScreen);
         s1.setMax(2);
         s1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
-            }
+                filterScreen.RefreshImage(FilterFunction(bitmap));            }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -34,14 +32,14 @@ public class FilterDemo {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                imageloc = FilterFuncation(image);
+               // filterScreen.RefreshImage(FilterFunction(bitmap));
             }
         });
-        TextView n1 = new TextView(context);
+        TextView n1 = new TextView(filterScreen);
         n1.setText("s1");
         names.add(n1);
         slider_array.add(s1);
-        SeekBar s2 = new SeekBar(context);
+        SeekBar s2 = new SeekBar(filterScreen);
         s2.setMax(4);
         s2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -56,14 +54,14 @@ public class FilterDemo {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                imageloc = FilterFuncation(image);
+                filterScreen.RefreshImage(FilterFunction(bitmap));
             }
         });
-        TextView n2 = new TextView(context);
+        TextView n2 = new TextView(filterScreen);
         n2.setText("s2");
         names.add(n2);
         slider_array.add(s2);
-        SeekBar s3 = new SeekBar(context);
+        SeekBar s3 = new SeekBar(filterScreen);
         s3.setMax(6);
         s3.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -78,20 +76,26 @@ public class FilterDemo {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                imageloc = FilterFuncation(image);
+                filterScreen.RefreshImage(FilterFunction(bitmap));
             }
         });
-        TextView n3 = new TextView(context);
+        TextView n3 = new TextView(filterScreen);
         n3.setText("s3");
         names.add(n3);
         slider_array.add(s3);
-        imageloc = image.copy(image.getConfig(), true);
-        Bitmap Filtered_image = FilterFuncation(image);
     }
 
-    private static Bitmap FilterFuncation(Bitmap image)
+    private static Bitmap FilterFunction(Bitmap image)
     {
-        return image;
+        Bitmap loc_bitmap = image.copy(image.getConfig(), true);
+        for (int i=0;i<loc_bitmap.getHeight();i++)
+        {
+            for (int j=0;j<loc_bitmap.getWidth();j++)
+            {
+                loc_bitmap.setPixel(j,i,0xffffff00);
+            }
+        }
+        return loc_bitmap;
     }
 }
 

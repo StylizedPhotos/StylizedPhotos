@@ -3,12 +3,17 @@ package com.stylizedphotos.stylizedphotos;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.renderscript.ScriptC;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import android.renderscript.Allocation;
+import android.renderscript.RenderScript;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,14 +21,20 @@ import java.util.ArrayList;
 public class FilterDemo {
     public ArrayList<SeekBar> slider_array = new ArrayList<SeekBar>();
     public ArrayList<TextView> names = new ArrayList<TextView>();
+    RenderScript rs;
+    FilterScreen filterScreenContext;
 
     FilterDemo(final Bitmap bitmap, final FilterScreen filterScreen) {
+        filterScreenContext = filterScreen;
+        rs = RenderScript.create(filterScreen);
         SeekBar s1 = new SeekBar(filterScreen);
         s1.setMax(2);
         s1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                filterScreen.RefreshImage(FilterFunction(bitmap));            }
+                new Background().execute(bitmap);
+
+                /*filterScreen.RefreshImage(FilterFunction(bitmap));      */      }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -54,7 +65,9 @@ public class FilterDemo {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                filterScreen.RefreshImage(FilterFunction(bitmap));
+                new Background().execute(bitmap);
+
+                //filterScreen.RefreshImage(FilterFunction(bitmap));
             }
         });
         TextView n2 = new TextView(filterScreen);
@@ -96,6 +109,27 @@ public class FilterDemo {
             }
         }
         return loc_bitmap;
+    }
+
+    private void RefreshImage(Bitmap bitmap) {
+        filterScreenContext.RefreshImage(bitmap);
+    }
+
+    class Background extends AsyncTask<Bitmap, Void, Bitmap> {
+        @Override
+        protected Bitmap doInBackground(Bitmap... bitmap) {
+            Bitmap loc_bitmap = bitmap[0].copy(bitmap[0].getConfig(), true);
+            Allocation alloc = Allocation.createFromBitmap(rs, loc_bitmap);
+            ScriptC_parallel parallel_script = new ScriptC_parallel(rs);
+            parallel_script.forEach_parallel(alloc);
+            alloc.copyTo(loc_bitmap);
+            return loc_bitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            RefreshImage(bitmap);
+        }
     }
 }
 

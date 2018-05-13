@@ -32,7 +32,8 @@ public class FilterDemo {
         s1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                new Background().execute(bitmap);
+                MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
+                new Background().execute(params);
 
                 /*filterScreen.RefreshImage(FilterFunction(bitmap));      */      }
 
@@ -65,8 +66,8 @@ public class FilterDemo {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                new Background().execute(bitmap);
-
+                MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
+                new Background().execute(params);
                 //filterScreen.RefreshImage(FilterFunction(bitmap));
             }
         });
@@ -89,8 +90,8 @@ public class FilterDemo {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                filterScreen.RefreshImage(FilterFunction(bitmap));
-            }
+                MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
+                new Background().execute(params);            }
         });
         TextView n3 = new TextView(filterScreen);
         n3.setText("s3");
@@ -115,10 +116,10 @@ public class FilterDemo {
         filterScreenContext.RefreshImage(bitmap);
     }
 
-    class Background extends AsyncTask<Bitmap, Void, Bitmap> {
+    class Background extends AsyncTask<MyTaskParams, Void, Bitmap> {
         @Override
-        protected Bitmap doInBackground(Bitmap... bitmap) {
-            Bitmap loc_bitmap = bitmap[0].copy(bitmap[0].getConfig(), true);
+        protected Bitmap doInBackground(MyTaskParams... params) {
+            Bitmap loc_bitmap = params[0].bitmap.copy(params[0].bitmap.getConfig(), true);
             Allocation alloc = Allocation.createFromBitmap(rs, loc_bitmap);
             ScriptC_parallel parallel_script = new ScriptC_parallel(rs);
             parallel_script.forEach_parallel(alloc);
@@ -129,6 +130,16 @@ public class FilterDemo {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             RefreshImage(bitmap);
+        }
+
+    }
+    //this is a warper inorder to send the image with the seekbar value
+    private static class MyTaskParams {
+        Bitmap bitmap;
+        int k;
+        MyTaskParams(Bitmap bitmap, int k ) {
+            this.bitmap = bitmap;
+            this.k = k;
         }
     }
 }

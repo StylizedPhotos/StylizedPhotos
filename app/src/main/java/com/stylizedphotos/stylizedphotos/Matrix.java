@@ -1,6 +1,15 @@
 package com.stylizedphotos.stylizedphotos;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
+
+import static android.graphics.Color.red;
+
 public class Matrix {
+
+    private int rows;
+    private int cols;
+
     public float[][] getMatrix() {
         return matrix;
     }
@@ -41,12 +50,11 @@ public class Matrix {
         this.cols = cols;
     }
 
-    private int rows;
-    private int cols;
-
     Matrix(int rows, int cols, float [][] arr)
     {
         matrix = new float[rows][cols];
+        this.rows = rows;
+        this.cols = cols;
         setMatrix(arr);
     }
 
@@ -61,4 +69,58 @@ public class Matrix {
         }
     }
     //TODO add operations
+
+    private int[] find_center(Matrix mat)
+    {
+        int[] result = new int[2];
+        result[0]=(mat.getCols()-1)/2; //one of them not needed thanks to n x n
+        result[1]=(mat.getRows()-1)/2;
+        return result;
+    }
+/*just to compile
+    private float convolve (Matrix kernel, Bitmap source) //inside convolution operation
+    {
+        int center[]=new int[2];
+        Color result = new Color();
+        center = find_center(kernel);//by ref
+        int vertical,horizontal;
+
+        for(int i=0; i < kernel.getRows();i++)
+        {
+            horizontal=i-center[0];
+            if(horizontal >= 0 && horizontal < source.getHeight())
+            {
+                for (int j = 0; j < kernel.getCols(); j++)
+                {
+                    vertical = j - center[1];
+                    if (vertical >= 0 && vertical < source.getWidth())
+                    {
+                        result.red() +=  red(source.getPixel(i, j)) * kernel.getVal(i, j);
+                    }
+                }
+            }
+        }
+        result /= (source.getRows()*source.getRows() +source.getCols()*source.getCols() + source.getRows()*source.getCols());
+        return result;
+    }
+
+    public float convolution (Matrix kernel, Bitmap image) // the convolution itself - can be called from outside of matrix
+    {
+        int result;
+        float[][] temp_arr = new float[kernel.getCols()][kernel.getRows()];
+        for(int i=0;i<kernel.getCols();i++)
+            for (int j=0;j<kernel.getRows();j++)
+            {
+                temp_arr[i][j] = image.getPixel()
+            }
+        Matrix temp_matrix = new Matrix(kernel.getRows(),kernel.getCols(),temp_arr);
+        for(int i=0;i<image.getWidth();i++)
+            for (int j=0;j<image.getHeight();j++)
+            {
+
+                convolve(kernel, )
+            }
+        return result;
+    }
+    */
 }

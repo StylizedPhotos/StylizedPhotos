@@ -124,15 +124,24 @@ public class Matrix {
 
     public static Bitmap convolution(Matrix kernel, Bitmap image)
     {
-        int i, j, ii, jj, m, n, mm, nn;
+        int i, j, ii, jj, m, n, mm, nn,sum=0;
         //Bitmap out = Bitmap.createBitmap(image.getWidth(), image.getHeight(), image.getConfig());// check if mutable
         Bitmap out = image.copy(image.getConfig(), true);// mutable copy of the source
         int new_color = 0;
         int temp_red = 0, temp_green = 0, temp_blue = 0, temp_alpha = 0;
+
+
+
+
+
         for (i = 0; i < image.getHeight(); ++i)              // rows
         {
             for (j = 0; j < image.getWidth(); ++j)          // columns
             {
+
+
+
+
                 for (m = 0; m < kernel.getRows(); ++m)     // kernel rows
                 {
                     mm = kernel.getRows() - 1 - m;      // row index of flipped kernel
@@ -142,29 +151,32 @@ public class Matrix {
                         nn = kernel.getCols() - 1 - n;  // column index of flipped kernel
 
                         // index of input signal, used for checking boundary
-                        ii = i + (m - find_center(kernel));
-                        jj = j + (n - find_center(kernel));
+                        ii = i + m - find_center(kernel);
+                        jj = j + n - find_center(kernel);
 
                         // ignore input samples which are out of bound
                         if (ii >= 0 && ii < image.getHeight() && jj >= 0 && jj <  image.getWidth()) {
                             //get all pixel value and calculate with them
-                            temp_alpha += (image.getPixel(jj, ii) >> 24 & 0xff) * kernel.getVal(mm, nn);
+                           // temp_alpha += (image.getPixel(ii, jj) >> 24 & 0xff) * kernel.getVal(mm, nn);
                             temp_red += (image.getPixel(jj, ii) >> 16 & 0xff) * kernel.getVal(mm, nn);
                             temp_green += (image.getPixel(jj, ii) >> 8 & 0xff) * kernel.getVal(mm, nn);
                             temp_blue += (image.getPixel(jj, ii) & 0xff) * kernel.getVal(mm, nn);
+                            sum+=kernel.getVal(m,n);
                         }
                     }
 
                 }
                 //set the new value
                 new_color = 0;
-                temp_alpha /= kernel.getRows()*kernel.getCols();
-                temp_red /= kernel.getRows()*kernel.getCols();
-                temp_green /= kernel.getRows()*kernel.getCols();
-                temp_blue /= kernel.getRows()*kernel.getCols();
-                new_color = new_color | (temp_alpha << 24) | (temp_red << 16) | (temp_green << 8) | temp_blue;
+               // temp_alpha /= kernel.getRows()*kernel.getCols();
+
+                temp_red /= sum;
+                temp_green /= sum;
+                temp_blue /= sum;
+                new_color = new_color/* | (temp_alpha << 24)*/ | (temp_red << 16) | (temp_green << 8) | temp_blue;
                 out.setPixel(j, i, new_color);
-                temp_alpha = 0;
+               // temp_alpha = 0;
+                sum=0;
                 temp_red = 0;
                 temp_green = 0;
                 temp_blue = 0;

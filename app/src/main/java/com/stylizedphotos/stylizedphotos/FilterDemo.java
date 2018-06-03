@@ -104,7 +104,7 @@ public class FilterDemo {
 
     private static Bitmap FilterFunction(Bitmap image)
     {
-        float arr[][] = {{1,1,1},{1,1,1},{1,1,1}};
+        float arr[][] = {{9,9,9},{9,9,9},{9,9,9}};
         Matrix ker = new Matrix(3,3,arr);
         return Matrix.convolution(ker,image);
         /*

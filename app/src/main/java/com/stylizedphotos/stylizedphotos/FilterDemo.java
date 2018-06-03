@@ -35,7 +35,8 @@ public class FilterDemo {
                 MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
                 new Background().execute(params);
 
-                /*filterScreen.RefreshImage(FilterFunction(bitmap));      */      }
+                //filterScreen.RefreshImage(FilterFunction(bitmap));
+            }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -57,6 +58,7 @@ public class FilterDemo {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 // TODO Auto-generated method stub
+
             }
 
             @Override
@@ -101,6 +103,10 @@ public class FilterDemo {
 
     private static Bitmap FilterFunction(Bitmap image)
     {
+        float arr[][] = {{1,1,1},{1,1,1},{1,1,1}};
+        Matrix ker = new Matrix(3,3,arr);
+        return ker.convolution(ker,image);
+        /*
         Bitmap loc_bitmap = image.copy(image.getConfig(), true);
         for (int i=0;i<loc_bitmap.getHeight();i++)
         {
@@ -110,6 +116,7 @@ public class FilterDemo {
             }
         }
         return loc_bitmap;
+        */
     }
 
     private void RefreshImage(Bitmap bitmap) {

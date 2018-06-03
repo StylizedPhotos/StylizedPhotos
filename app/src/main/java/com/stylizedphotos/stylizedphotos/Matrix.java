@@ -65,7 +65,7 @@ public class Matrix {
     }
     //TODO add operations
 
-    private int find_center(Matrix mat) {
+    private static int find_center(Matrix mat) {
         int result;
         result = (mat.getCols() - 1) / 2; //one of them not needed thanks to n x n
         return result;
@@ -122,7 +122,7 @@ public class Matrix {
     */
 
 
-    public Bitmap convolution(Matrix kernel, Bitmap image)
+    public static Bitmap convolution(Matrix kernel, Bitmap image)
     {
         int i, j, ii, jj, m, n, mm, nn;
         //Bitmap out = Bitmap.createBitmap(image.getWidth(), image.getHeight(), image.getConfig());// check if mutable
@@ -146,24 +146,28 @@ public class Matrix {
                         jj = j + (n - find_center(kernel));
 
                         // ignore input samples which are out of bound
-                        if (ii >= 0 && ii < rows && jj >= 0 && jj < cols) {
+                        if (ii >= 0 && ii < image.getHeight() && jj >= 0 && jj <  image.getWidth()) {
                             //get all pixel value and calculate with them
                             temp_alpha += (image.getPixel(ii, jj) >> 24 & 0xff) * kernel.getVal(mm, nn);
                             temp_red += (image.getPixel(ii, jj) >> 16 & 0xff) * kernel.getVal(mm, nn);
                             temp_green += (image.getPixel(ii, jj) >> 8 & 0xff) * kernel.getVal(mm, nn);
                             temp_blue += (image.getPixel(ii, jj) & 0xff) * kernel.getVal(mm, nn);
                         }
-                        //set the new value
-                        new_color = 0;
-                        new_color = new_color | (temp_alpha << 24) | (temp_red << 16) | (temp_green << 8) | temp_blue;
-                        out.setPixel(i, j, new_color);
-                        temp_alpha = 0;
-                        temp_red = 0;
-                        temp_green = 0;
-                        temp_blue = 0;
                     }
 
                 }
+                //set the new value
+                new_color = 0;
+                temp_alpha /= kernel.getRows()*kernel.getCols();
+                temp_red /= kernel.getRows()*kernel.getCols();
+                temp_green /= kernel.getRows()*kernel.getCols();
+                temp_blue /= kernel.getRows()*kernel.getCols();
+                new_color = new_color | (temp_alpha << 24) | (temp_red << 16) | (temp_green << 8) | temp_blue;
+                out.setPixel(i, j, new_color);
+                temp_alpha = 0;
+                temp_red = 0;
+                temp_green = 0;
+                temp_blue = 0;
             }
         }
         return out;

@@ -32,10 +32,10 @@ public class FilterDemo {
         s1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
-                new Background().execute(params);
+              //  MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
+               // new Background().execute(params);
 
-                //filterScreen.RefreshImage(FilterFunction(bitmap));
+                filterScreen.RefreshImage(FilterFunction(bitmap));
             }
 
             @Override
@@ -68,8 +68,8 @@ public class FilterDemo {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
-                new Background().execute(params);
+               // MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
+               // new Background().execute(params);
                 //filterScreen.RefreshImage(FilterFunction(bitmap));
             }
         });
@@ -92,8 +92,9 @@ public class FilterDemo {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
-                new Background().execute(params);            }
+               // MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
+               // new Background().execute(params);
+                }
         });
         TextView n3 = new TextView(filterScreen);
         n3.setText("s3");
@@ -105,7 +106,7 @@ public class FilterDemo {
     {
         float arr[][] = {{1,1,1},{1,1,1},{1,1,1}};
         Matrix ker = new Matrix(3,3,arr);
-        return ker.convolution(ker,image);
+        return Matrix.convolution(ker,image);
         /*
         Bitmap loc_bitmap = image.copy(image.getConfig(), true);
         for (int i=0;i<loc_bitmap.getHeight();i++)

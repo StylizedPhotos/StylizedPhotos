@@ -27,14 +27,13 @@ public class FilterChooser extends AppCompatActivity
         setContentView(R.layout.activity_filter_chooser);
 
         filters_names.add("Mean blur");
-        filters_names.add("gaussian  blur");
+        filters_names.add("gaussian blur");
         filters_names.add("Edge Detection");
         filters_names.add("Sharpening");
         filters_names.add("RGB");
         filters_names.add("HSV");
         filters_names.add("Dominant Color Removal");
         filters_names.add("Dominant Color Highlight");
-
         Bundle extras = getIntent().getExtras();
         final Uri imageUri = Uri.parse(extras.getString("imageUri"));
 
@@ -58,6 +57,7 @@ public class FilterChooser extends AppCompatActivity
                 public void onClick(View v) {
                     Intent intent = new Intent(getBaseContext(), FilterScreen.class);
                     intent.putExtra("imageUri", imageUri.toString());
+                    //intent.putExtra("opcode", i);
                     startActivityForResult(intent, RESULT_OPEN_FILTER_SCREEN);
                 }
             });

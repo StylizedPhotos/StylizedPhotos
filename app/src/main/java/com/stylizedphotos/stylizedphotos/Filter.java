@@ -11,6 +11,7 @@ public class Filter {
     private String name;
     private ArrayList<SeekBar> seekbar_array;
     private ArrayList<TextView> names;
+    private int op_code;
 
     public String getName() {
         return name;

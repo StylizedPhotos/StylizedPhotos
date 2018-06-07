@@ -24,6 +24,7 @@ public class FilterScreen extends AppCompatActivity {
         setContentView(R.layout.activity_filter_screen);
 
         Bundle extras = getIntent().getExtras();
+        int opcode = extras.getInt("opcode");
         final Uri imageUri = Uri.parse(extras.getString("imageUri"));
 
         Bitmap bitmap = null;  //convert the uri to a bitmap
@@ -36,15 +37,74 @@ public class FilterScreen extends AppCompatActivity {
 
        /* Intent intent = new Intent(this, FilterDemo.class);  //creating the intent to switch to the FilterChooser activity
         startActivity(intent);  //starting the intent*/
-
-        FilterDemo demo = new FilterDemo(bitmap, this);
-        //ScrollView scroll = (ScrollView) findViewById(R.id.scrollView2);
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
-
-        for (int i = 0; i < demo.slider_array.size(); i++) {
-            linearLayout.addView(demo.names.get(i));
-            linearLayout.addView(demo.slider_array.get(i));
+        switch (opcode){
+            case 0:
+                MeanBlur meanBlur = new MeanBlur(bitmap, this);
+                for (int i = 0; i < meanBlur.slider_array.size(); i++) {
+                    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
+                    linearLayout.addView(meanBlur.names.get(i));
+                    linearLayout.addView(meanBlur.slider_array.get(i));
+                }
+                break;
+            case 1:
+                GaussianBlur gaussianBlur = new GaussianBlur(bitmap, this);
+                for (int i = 0; i < gaussianBlur.slider_array.size(); i++) {
+                    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
+                    linearLayout.addView(gaussianBlur.names.get(i));
+                    linearLayout.addView(gaussianBlur.slider_array.get(i));
+                }
+                break;
+           /* case 2:
+                MeanBlur filter = new MeanBlur(bitmap, this);
+                for (int i = 0; i < filter.slider_array.size(); i++) {
+                    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
+                    linearLayout.addView(filter.names.get(i));
+                    linearLayout.addView(filter.slider_array.get(i));
+                }
+                break;
+            case 3:
+                MeanBlur filter = new MeanBlur(bitmap, this);
+                for (int i = 0; i < filter.slider_array.size(); i++) {
+                    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
+                    linearLayout.addView(filter.names.get(i));
+                    linearLayout.addView(filter.slider_array.get(i));
+                }
+                break;
+            case 4:
+                MeanBlur filter = new MeanBlur(bitmap, this);
+                for (int i = 0; i < filter.slider_array.size(); i++) {
+                    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
+                    linearLayout.addView(filter.names.get(i));
+                    linearLayout.addView(filter.slider_array.get(i));
+                }
+                break;
+            case 5:
+                MeanBlur filter = new MeanBlur(bitmap, this);
+                for (int i = 0; i < filter.slider_array.size(); i++) {
+                    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
+                    linearLayout.addView(filter.names.get(i));
+                    linearLayout.addView(filter.slider_array.get(i));
+                }
+                break;
+            case 6:
+                MeanBlur filter = new MeanBlur(bitmap, this);
+                for (int i = 0; i < filter.slider_array.size(); i++) {
+                    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
+                    linearLayout.addView(filter.names.get(i));
+                    linearLayout.addView(filter.slider_array.get(i));
+                }
+                break;
+            case 7:
+                MeanBlur filter = new MeanBlur(bitmap, this);
+                for (int i = 0; i < filter.slider_array.size(); i++) {
+                    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
+                    linearLayout.addView(filter.names.get(i));
+                    linearLayout.addView(filter.slider_array.get(i));
+                }
+                break;*/
         }
+        //FilterDemo demo = new FilterDemo(bitmap, this);
+        //ScrollView scroll = (ScrollView) findViewById(R.id.scrollView2);
     }
 
     private Bitmap getBitmapFromUri(Uri uri) throws IOException {

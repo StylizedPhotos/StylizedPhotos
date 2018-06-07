@@ -1,30 +1,21 @@
 package com.stylizedphotos.stylizedphotos;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.renderscript.ScriptC;
-import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
-import android.widget.ScrollView;
+import android.renderscript.Allocation;
+import android.renderscript.RenderScript;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import android.renderscript.Allocation;
-import android.renderscript.RenderScript;
-
-import java.io.IOException;
 import java.util.ArrayList;
 
-public class FilterDemo {
+public class GaussianBlur {
     public ArrayList<SeekBar> slider_array = new ArrayList<SeekBar>();
     public ArrayList<TextView> names = new ArrayList<TextView>();
     RenderScript rs;
     FilterScreen filterScreenContext;
 
-    FilterDemo(final Bitmap bitmap, final FilterScreen filterScreen) {
+    GaussianBlur(final Bitmap bitmap, final FilterScreen filterScreen) {
         filterScreenContext = filterScreen;
         rs = RenderScript.create(filterScreen);
         SeekBar s1 = new SeekBar(filterScreen);
@@ -32,8 +23,8 @@ public class FilterDemo {
         s1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-              //  MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
-               // new Background().execute(params);
+                //  MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
+                // new Background().execute(params);
 
                 filterScreen.RefreshImage(FilterFunction(bitmap));
             }
@@ -45,7 +36,7 @@ public class FilterDemo {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-               // filterScreen.RefreshImage(FilterFunction(bitmap));
+                // filterScreen.RefreshImage(FilterFunction(bitmap));
             }
         });
         TextView n1 = new TextView(filterScreen);
@@ -68,8 +59,8 @@ public class FilterDemo {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-               // MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
-               // new Background().execute(params);
+                // MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
+                // new Background().execute(params);
                 //filterScreen.RefreshImage(FilterFunction(bitmap));
             }
         });
@@ -92,9 +83,9 @@ public class FilterDemo {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-               // MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
-               // new Background().execute(params);
-                }
+                // MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
+                // new Background().execute(params);
+            }
         });
         TextView n3 = new TextView(filterScreen);
         n3.setText("s3");
@@ -104,7 +95,9 @@ public class FilterDemo {
 
     private static Bitmap FilterFunction(Bitmap image)
     {
-        float arr[][] = {{9,9,9},{9,9,9},{9,9,9}};
+        float arr[][] = {   {1,2,1},
+                            {2,4,2},
+                            {1,4,1}};
         Matrix ker = new Matrix(3,3,arr);
         return Matrix.convolution(ker,image);
         /*
@@ -124,9 +117,9 @@ public class FilterDemo {
         filterScreenContext.RefreshImage(bitmap);
     }
 
-    class Background extends AsyncTask<MyTaskParams, Void, Bitmap> {
+    class Background extends AsyncTask<MeanBlur.MyTaskParams, Void, Bitmap> {
         @Override
-        protected Bitmap doInBackground(MyTaskParams... params) {
+        protected Bitmap doInBackground(MeanBlur.MyTaskParams... params) {
             Bitmap loc_bitmap = params[0].bitmap.copy(params[0].bitmap.getConfig(), true);
             Allocation alloc = Allocation.createFromBitmap(rs, loc_bitmap);
             ScriptC_parallel parallel_script = new ScriptC_parallel(rs);
@@ -151,4 +144,3 @@ public class FilterDemo {
         }
     }
 }
-

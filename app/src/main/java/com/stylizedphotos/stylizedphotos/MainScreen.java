@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -26,7 +27,7 @@ public class MainScreen extends AppCompatActivity
 {
     private static final int RESULT_LOAD_IMAGE = 2;
     private static final int REQUEST_IMAGE_CAPTURE = 3;
-
+    private static final int YOUR_RESULT_CODE =4;
     Uri photoUri = null;
     String mCurrentPhotoPath;
 
@@ -57,7 +58,26 @@ public class MainScreen extends AppCompatActivity
     {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.settings_popup, menu);
+        menu.add(Menu.NONE, 0, Menu.NONE, "Add external filter");
+        menu.add(Menu.NONE, 1, Menu.NONE, "Remove external filter");
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case 0:
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("file/*");
+                startActivityForResult(intent, YOUR_RESULT_CODE);
+                return true;
+            case 1:
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void CallGallery()

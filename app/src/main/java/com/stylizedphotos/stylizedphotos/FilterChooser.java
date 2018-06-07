@@ -27,7 +27,7 @@ public class FilterChooser extends AppCompatActivity
         setContentView(R.layout.activity_filter_chooser);
 
         filters_names.add("Mean blur");
-        filters_names.add("gaussian blur");
+        filters_names.add("Gaussian blur");
         filters_names.add("Edge Detection");
         filters_names.add("Sharpening");
         filters_names.add("RGB");
@@ -47,6 +47,7 @@ public class FilterChooser extends AppCompatActivity
         ImageView image = (ImageView) findViewById(R.id.imageViewFilter);
         image.setImageBitmap(bitmap);
         for(int i=0;i<filters_names.size();i++) {
+            final int opcode = i;
             LinearLayout filters = (LinearLayout) findViewById(R.id.filter_layout);
             Button but = new Button(this);
             but.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -57,7 +58,7 @@ public class FilterChooser extends AppCompatActivity
                 public void onClick(View v) {
                     Intent intent = new Intent(getBaseContext(), FilterScreen.class);
                     intent.putExtra("imageUri", imageUri.toString());
-                    //intent.putExtra("opcode", i);
+                    intent.putExtra("opcode", opcode);
                     startActivityForResult(intent, RESULT_OPEN_FILTER_SCREEN);
                 }
             });

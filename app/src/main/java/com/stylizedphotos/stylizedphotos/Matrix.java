@@ -211,7 +211,7 @@ public class Matrix {
 
 
 
-        Bitmap out2 = Bitmap.createBitmap(intArray, out.getWidth(), out.getHeight(),out.getConfig());
+        Bitmap out2 = Bitmap.createBitmap(intArray, out.getWidth(), out.getHeight(), Bitmap.Config.RGB_565);
 
 
 

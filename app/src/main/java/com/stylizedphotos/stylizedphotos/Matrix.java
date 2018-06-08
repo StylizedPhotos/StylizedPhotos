@@ -80,6 +80,7 @@ public class Matrix {
     {
         int i, j, ii, jj, m, n, mm, nn,sum=0, width=image.getWidth(), height=image.getHeight(),ker_cols=kernel.getCols(),ker_rows=kernel.getRows();
         int[] center = new int [2];
+        float [][] ker_vals = new float[ker_cols][ker_rows];
         int[][] arr = new int[image.getHeight()+1][image.getWidth()+1];
         //Bitmap out = Bitmap.createBitmap(image.getWidth(), image.getHeight(), image.getConfig());// check if mutable
         Bitmap out = image.copy(image.getConfig(), true);// mutable copy of the source
@@ -115,7 +116,9 @@ public class Matrix {
 //                intArray[i] =  0xFFFFFF00;
 //        }
 
-
+        for(i=0;i<ker_cols;i++)
+            for(j=0;j<ker_rows;j++)
+                ker_vals[i][j]=kernel.getVal(i,j);
 
         center[0]= find_center(kernel)[0];
         center[1]= find_center(kernel)[1];
@@ -137,10 +140,10 @@ public class Matrix {
                         // ignore input samples which are out of bound
                         if (ii >= 0 && ii < height && jj >= 0 && jj <  width) {
                             //get all pixel value and calculate with them
-                            temp_red += (intArray[ii*width+jj] >> 16 & 0xff) * kernel.getVal(mm, nn);
-                            temp_green += (intArray[ii*width+jj] >> 8 & 0xff) * kernel.getVal(mm, nn);
-                            temp_blue += (intArray[ii*width+jj] & 0xff) * kernel.getVal(mm, nn);
-                            sum+=kernel.getVal(m,n);
+                            temp_red += (intArray[ii*width+jj] >> 16 & 0xff) * ker_vals[mm][nn];
+                            temp_green += (intArray[ii*width+jj] >> 8 & 0xff) * ker_vals[mm][nn];
+                            temp_blue += (intArray[ii*width+jj] & 0xff) * ker_vals[mm][nn];
+                            sum+=ker_vals[m][n];
                         }
                     }
                 }

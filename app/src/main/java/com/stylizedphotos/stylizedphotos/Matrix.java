@@ -80,8 +80,14 @@ public class Matrix {
     {
         int i, j, ii, jj, m, n, mm, nn,sum=0, width=image.getWidth(), height=image.getHeight(),ker_cols=kernel.getCols(),ker_rows=kernel.getRows();
         int[] center = new int [2];
-        float [][] ker_vals = new float[ker_cols][ker_rows];
+        float [][] ker_vals = new float[ker_rows][ker_cols];
         int[][] arr = new int[image.getHeight()+1][image.getWidth()+1];
+//        //float[][] horizontal_array=new float[ker_rows][1]; //the first to multiply
+//        float[][] horizontal_array={{1},{1},{1},{1},{1},{1},{1},{1},{1},{1},{1}};
+//        Matrix horizontal_matrix = new Matrix(ker_rows,1,horizontal_array);
+//       // float[][] vertical_array=new float[1][ker_cols];
+//        float[][] vertical_array={{1,1,1,1,1,1,1,1,1,1}};
+//        Matrix vertical_matrix= new Matrix(1,ker_cols,vertical_array);
         //Bitmap out = Bitmap.createBitmap(image.getWidth(), image.getHeight(), image.getConfig());// check if mutable
         Bitmap out = image.copy(image.getConfig(), true);// mutable copy of the source
         int new_color = 0;
@@ -116,8 +122,8 @@ public class Matrix {
 //                intArray[i] =  0xFFFFFF00;
 //        }
 
-        for(i=0;i<ker_cols;i++)
-            for(j=0;j<ker_rows;j++)
+        for(i=0;i<ker_rows;i++)
+            for(j=0;j<ker_cols;j++)
                 ker_vals[i][j]=kernel.getVal(i,j);
 
         center[0]= find_center(kernel)[0];

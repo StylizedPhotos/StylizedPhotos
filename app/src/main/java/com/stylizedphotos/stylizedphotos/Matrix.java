@@ -1,12 +1,7 @@
 package com.stylizedphotos.stylizedphotos;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 
-import java.io.ByteArrayOutputStream;
-
-import static android.graphics.Color.red;
 
 public class Matrix {
 
@@ -75,52 +70,15 @@ public class Matrix {
     }
 
 
-
     public static Bitmap convolution(Matrix kernel, Bitmap image)
     {
         int i, j, ii, jj, m, n, mm, nn,sum=0, width=image.getWidth(), height=image.getHeight(),ker_cols=kernel.getCols(),ker_rows=kernel.getRows();
         int[] center = new int [2];
         float [][] ker_vals = new float[ker_rows][ker_cols];
-        int[][] arr = new int[image.getHeight()+1][image.getWidth()+1];
-//        //float[][] horizontal_array=new float[ker_rows][1]; //the first to multiply
-//        float[][] horizontal_array={{1},{1},{1},{1},{1},{1},{1},{1},{1},{1},{1}};
-//        Matrix horizontal_matrix = new Matrix(ker_rows,1,horizontal_array);
-//       // float[][] vertical_array=new float[1][ker_cols];
-//        float[][] vertical_array={{1,1,1,1,1,1,1,1,1,1}};
-//        Matrix vertical_matrix= new Matrix(1,ker_cols,vertical_array);
-        //Bitmap out = Bitmap.createBitmap(image.getWidth(), image.getHeight(), image.getConfig());// check if mutable
-        Bitmap out = image.copy(image.getConfig(), true);// mutable copy of the source
-        int new_color = 0;
-        int temp_red = 0, temp_green = 0, temp_blue = 0, temp_alpha = 0;
-//        for (i = 1; i < image.getHeight()+1; ++i)              // rows
-//        {
-//            for (j = 1; j < image.getWidth()+1; ++j)          // columns
-//            {
-//                arr[i][j] = image.getPixel(j,i);
-//            }
-//        }
-
-// trying new format - bmp to png via output stream-------------------------------------------------//
-        int[] intArray = new int[out.getWidth()*out.getHeight()];// 1d array of ints to get image
-//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//        out.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//        byte[] byteArray = stream.toByteArray();
-        out.getPixels(intArray, 0, out.getWidth(), 0, 0, out.getWidth(), out.getHeight()); // pixels to int array
-
-//        int [] rowData= new int [out.getWidth()];
-//        for (int row = 0; row < out.getHeight(); row ++) {
-//            // Load row of pixels
-//            out.getPixels(rowData, 0, out.getWidth(), 0, row, out.getWidth(), 1);
-//
-//            for (int column = 0; column < out.getWidth(); column ++) {
-//                byteArray[column+row*out.getWidth()] = rowData[column];
-//            }
-//        }
-
-//        for (i=0; i < intArray.length; i++)
-//        {
-//                intArray[i] =  0xFFFFFF00;
-//        }
+        int new_color;
+        int temp_red = 0, temp_green = 0, temp_blue = 0;
+        int[] intArray = new int[image.getWidth()*image.getHeight()];// 1d array of ints to get image
+        image.getPixels(intArray, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight()); // pixels to int array
 
         for(i=0;i<ker_rows;i++)
             for(j=0;j<ker_cols;j++)
@@ -141,7 +99,6 @@ public class Matrix {
                     {
                         nn = ker_cols - 1 - n;  // column index of flipped kernel
                         // index of input signal, used for checking boundary
-
                         jj = j + n - center[1];
                         // ignore input samples which are out of bound
                         if (ii >= 0 && ii < height && jj >= 0 && jj <  width) {
@@ -155,15 +112,11 @@ public class Matrix {
                 }
                 //set the new value
                 new_color = 0;
-                // temp_alpha /= kernel.getRows()*kernel.getCols();
                 temp_red = (temp_red/sum)%256;//to prevent sliding
                 temp_green = (temp_green/sum)%256;//to prevent sliding
                 temp_blue = (temp_blue/sum)%256;//to prevent sliding
                 new_color = new_color | (temp_red << 16) | (temp_green << 8) | temp_blue;
                 intArray[i*width+j]=new_color;
-                //out.setPixel(j, i, new_color);
-                // arr[j][i] = new_color;
-                // temp_alpha = 0;
                 sum=0;
                 temp_red = 0;
                 temp_green = 0;

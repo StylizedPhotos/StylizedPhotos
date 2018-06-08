@@ -67,66 +67,19 @@ public class Matrix {
     }
     //TODO add operations
 
-    private static int find_center(Matrix mat) {
-        int result;
-        result = (mat.getCols() - 1) / 2; //one of them not needed thanks to n x n
-        return result;
-    }
-    /*
-//just to compile
-    private float convolve (Matrix kernel, Bitmap source) //inside convolution operation
-    {
-        int[] center = new int[2];
-        int red=0,green=0,blue=0;
-        Color result = new Color();
-        center = find_center(kernel);//by ref
-        int vertical,horizontal;
-
-        for(int i=0; i < kernel.getRows();i++)
-        {
-            horizontal=i-center[0];
-            if(horizontal >= 0 && horizontal < source.getHeight())
-            {
-                for (int j = 0; j < kernel.getCols(); j++)
-                {
-                    vertical = j - center[1];
-                    if (vertical >= 0 && vertical < source.getWidth())
-                    {
-                       red+=  red(source.getPixel(i, j)) * kernel.getVal(i, j);
-                       green+=  red(source.getPixel(i, j)) * kernel.getVal(i, j);
-                       blue+=  red(source.getPixel(i, j)) * kernel.getVal(i, j);
-                    }
-                }
-            }
-        }
-        result /= (source.getHeight()*source.getHeight() +source.getCols()*source.getCols() + source.getRows()*source.getCols());
+    private static int[] find_center(Matrix mat) {
+        int[] result= new int[2];
+        result[1] = (mat.getCols() - 1) / 2;
+        result[0] = (mat.getRows() - 1) / 2; //2,3
         return result;
     }
 
-    public float convolution (Matrix kernel, Bitmap image) // the convolution itself - can be called from outside of matrix
-    {
-        int result;
-        float[][] temp_arr = new float[kernel.getCols()][kernel.getRows()];
-        for(int i=0;i<kernel.getCols();i++)
-            for (int j=0;j<kernel.getRows();j++)
-            {
-                temp_arr[i][j] = image.getPixel()
-            }
-        Matrix temp_matrix = new Matrix(kernel.getRows(),kernel.getCols(),temp_arr);
-        for(int i=0;i<image.getWidth();i++)
-            for (int j=0;j<image.getHeight();j++)
-            {
-
-                convolve(kernel, )
-            }
-        return result;
-    }
-    */
 
 
     public static Bitmap convolution(Matrix kernel, Bitmap image)
     {
-        int i, j, ii, jj, m, n, mm, nn,sum=0;
+        int i, j, ii, jj, m, n, mm, nn,sum=0, width=image.getWidth(), height=image.getHeight(),ker_cols=kernel.getCols(),ker_rows=kernel.getRows();
+        int[] center = new int [2];
         int[][] arr = new int[image.getHeight()+1][image.getWidth()+1];
         //Bitmap out = Bitmap.createBitmap(image.getWidth(), image.getHeight(), image.getConfig());// check if mutable
         Bitmap out = image.copy(image.getConfig(), true);// mutable copy of the source
@@ -164,28 +117,29 @@ public class Matrix {
 
 
 
+        center[0]= find_center(kernel)[0];
+        center[1]= find_center(kernel)[1];
 
-
-
-        for (i = 0; i < image.getHeight(); ++i)              // rows
+        for (i = 0; i < height; ++i)              // rows
         {
-            for (j = 0; j < image.getWidth(); ++j)          // columns
+            for (j = 0; j < width; ++j)          // columns
             {
-                for (m = 0; m < kernel.getRows(); ++m)     // kernel rows
+                for (m = 0; m < ker_rows; ++m)     // kernel rows
                 {
-                    mm = kernel.getRows() - 1 - m;      // row index of flipped kernel
-                    for (n = 0; n < kernel.getCols(); ++n) // kernel columns
+                    mm = ker_rows - 1 - m;      // row index of flipped kernel
+                    ii = i + m - center[0];//here to save some actions
+                    for (n = 0; n < ker_cols; ++n) // kernel columns
                     {
-                        nn = kernel.getCols() - 1 - n;  // column index of flipped kernel
+                        nn = ker_cols - 1 - n;  // column index of flipped kernel
                         // index of input signal, used for checking boundary
-                        ii = i + m - find_center(kernel);
-                        jj = j + n - find_center(kernel);
+
+                        jj = j + n - center[1];
                         // ignore input samples which are out of bound
-                        if (ii >= 0 && ii < image.getHeight() && jj >= 0 && jj <  image.getWidth()) {
+                        if (ii >= 0 && ii < height && jj >= 0 && jj <  width) {
                             //get all pixel value and calculate with them
-                            temp_red += (intArray[ii*out.getWidth()+jj] >> 16 & 0xff) * kernel.getVal(mm, nn);
-                            temp_green += (intArray[ii*out.getWidth()+jj] >> 8 & 0xff) * kernel.getVal(mm, nn);
-                            temp_blue += (intArray[ii*out.getWidth()+jj] & 0xff) * kernel.getVal(mm, nn);
+                            temp_red += (intArray[ii*width+jj] >> 16 & 0xff) * kernel.getVal(mm, nn);
+                            temp_green += (intArray[ii*width+jj] >> 8 & 0xff) * kernel.getVal(mm, nn);
+                            temp_blue += (intArray[ii*width+jj] & 0xff) * kernel.getVal(mm, nn);
                             sum+=kernel.getVal(m,n);
                         }
                     }
@@ -193,11 +147,11 @@ public class Matrix {
                 //set the new value
                 new_color = 0;
                 // temp_alpha /= kernel.getRows()*kernel.getCols();
-                temp_red /= sum;
-                temp_green /= sum;
-                temp_blue /= sum;
+                temp_red = (temp_red/sum)%256;//to prevent sliding
+                temp_green = (temp_green/sum)%256;//to prevent sliding
+                temp_blue = (temp_blue/sum)%256;//to prevent sliding
                 new_color = new_color | (temp_red << 16) | (temp_green << 8) | temp_blue;
-                intArray[i*out.getWidth()+j]=new_color;
+                intArray[i*width+j]=new_color;
                 //out.setPixel(j, i, new_color);
                 // arr[j][i] = new_color;
                 // temp_alpha = 0;
@@ -211,7 +165,7 @@ public class Matrix {
 
 
 
-        Bitmap out2 = Bitmap.createBitmap(intArray, out.getWidth(), out.getHeight(), Bitmap.Config.RGB_565);
+        Bitmap out2 = Bitmap.createBitmap(intArray, width, height, Bitmap.Config.RGB_565);
 
 
 

@@ -117,13 +117,13 @@ public class GaussianBlur {
         filterScreenContext.RefreshImage(bitmap);
     }
 
-    class Background extends AsyncTask<MeanBlur.MyTaskParams, Void, Bitmap> {
+    class Background extends AsyncTask<GaussianBlur.MyTaskParams, Void, Bitmap> {
         @Override
-        protected Bitmap doInBackground(MeanBlur.MyTaskParams... params) {
+        protected Bitmap doInBackground(GaussianBlur.MyTaskParams... params) {
             Bitmap loc_bitmap = params[0].bitmap.copy(params[0].bitmap.getConfig(), true);
             Allocation alloc = Allocation.createFromBitmap(rs, loc_bitmap);
             ScriptC_parallel parallel_script = new ScriptC_parallel(rs);
-            parallel_script.forEach_parallel(alloc);
+            //parallel_script.forEach_parallel(alloc);
             alloc.copyTo(loc_bitmap);
             return loc_bitmap;
         }

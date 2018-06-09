@@ -134,7 +134,7 @@ public class MeanBlur {
             Bitmap loc_bitmap = params[0].bitmap.copy(params[0].bitmap.getConfig(), true);
             Allocation alloc = Allocation.createFromBitmap(rs, loc_bitmap);
             ScriptC_parallel parallel_script = new ScriptC_parallel(rs);
-            parallel_script.forEach_parallel(alloc);
+            //parallel_script.forEach_parallel(alloc);
             alloc.copyTo(loc_bitmap);
             return loc_bitmap;
         }
@@ -146,12 +146,16 @@ public class MeanBlur {
 
     }
     //this is a warper inorder to send the image with the seekbar value
-    static class MyTaskParams {
+    private static class MyTaskParams {
         Bitmap bitmap;
         int k;
-        MyTaskParams(Bitmap bitmap, int k ) {
+        float [][] kernal;
+        MyTaskParams(Bitmap bitmap, int k, Matrix kernal ) {
             this.bitmap = bitmap;
             this.k = k;
+            for(int i=0;i<kernal.getRows();i++)
+                for(int j=0;j<kernal.getCols();j++)
+                    this.kernal[i][j] = kernal.getVal(i,j);
         }
     }
 }

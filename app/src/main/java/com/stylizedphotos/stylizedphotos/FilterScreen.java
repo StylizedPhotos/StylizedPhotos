@@ -69,16 +69,16 @@ public class FilterScreen extends AppCompatActivity {
                     linearLayout.addView(filter.names.get(i));
                     linearLayout.addView(filter.slider_array.get(i));
                 }
-                break;
+                break;*/
             case 4:
-                MeanBlur filter = new MeanBlur(bitmap, this);
+                RGB filter = new RGB(bitmap, this);
                 for (int i = 0; i < filter.slider_array.size(); i++) {
                     LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
                     linearLayout.addView(filter.names.get(i));
                     linearLayout.addView(filter.slider_array.get(i));
                 }
                 break;
-            case 5:
+            /*case 5:
                 MeanBlur filter = new MeanBlur(bitmap, this);
                 for (int i = 0; i < filter.slider_array.size(); i++) {
                     LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);

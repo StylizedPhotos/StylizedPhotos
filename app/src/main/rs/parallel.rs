@@ -11,24 +11,25 @@ int blue = 0;
 }*/
 
 void root(const uchar4 *in, uchar4 *out, uint32_t x, uint32_t y) {
-    int redpix = 0;
-    int greenpix = 0;
-    int bluepix = 0;
+    float redpix = 0;
+    float greenpix = 0;
+    float bluepix = 0;
     float3 inpixel = convert_float4(in[0]).rgb;
-    if ((inpixel.x + red) > 255)
+   /* if ((inpixel.x + red) > 255)
         redpix=255;
     else
         redpix = inpixel.x + red;
     if ((inpixel.x + green) > 255)
             greenpix=255;
         else
-            greenpix = inpixel.x + green;
+            greenpix = (float)(inpixel.y + green);
     if ((inpixel.x + blue) > 255)
             bluepix=255;
         else
-            bluepix = inpixel.x + blue;
-    float3 outpixel = {redpix, greenpix, bluepix};
-    *out = rsPackColorTo8888(outpixel);
+            bluepix = inpixel.z + blue;*/
+    float3 outpixel = {(float)(inpixel.x + red)/255,(float)(inpixel.y + green)/255,(float)(inpixel.z + blue)/255};
+   *out = rsPackColorTo8888(outpixel);
+   //out[3] = 255;
     /*pixel = rsMatrixMultiply(&colorMat, pixel);
     pixel = clamp(pixel, 0.f, 255.f);
     pixel = (pixel - inBlack) * overInWMinInB;

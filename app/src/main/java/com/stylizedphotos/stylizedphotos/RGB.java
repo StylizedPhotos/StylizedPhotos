@@ -14,17 +14,23 @@ public class RGB {
     public ArrayList<TextView> names = new ArrayList<TextView>();
     RenderScript rs;
     FilterScreen filterScreenContext;
+    private int seek_red = 0;
+    private int seek_green = 0;
+    private int seek_blue = 0;
 
     public RGB (final Bitmap bitmap, final FilterScreen filterScreen){
         filterScreenContext = filterScreen;
         rs = RenderScript.create(filterScreen);
         SeekBar red= new SeekBar(filterScreen);
-        red.setMax(255);
+        red.setMax(100);
         red.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 MyTaskParams params = new MyTaskParams(bitmap);
-                params.setRed(seekBar.getProgress());
+                seek_red = seekBar.getProgress();
+                params.setRed(seek_red);
+                params.setGreen(seek_green);
+                params.setBlue(seek_blue);
                 new Background().execute(params);
 
                 //filterScreen.RefreshImage(FilterFunction(bitmap));
@@ -45,13 +51,16 @@ public class RGB {
         names.add(n1);
         slider_array.add(red);
         SeekBar green = new SeekBar(filterScreen);
-        green.setMax(255);
+        green.setMax(100);
         green.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 // TODO Auto-generated method stub
                 MyTaskParams params = new MyTaskParams(bitmap);
-                params.setGreen(seekBar.getProgress());
+                seek_green = seekBar.getProgress();
+                params.setRed(seek_red);
+                params.setGreen(seek_green);
+                params.setBlue(seek_blue);
                 new Background().execute(params);
             }
 
@@ -72,13 +81,16 @@ public class RGB {
         names.add(n2);
         slider_array.add(green);
         SeekBar blue = new SeekBar(filterScreen);
-        blue.setMax(255);
+        blue.setMax(100);
         blue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 // TODO Auto-generated method stub
                 MyTaskParams params = new MyTaskParams(bitmap);
-                params.setBlue(seekBar.getProgress());
+                seek_blue = seekBar.getProgress();
+                params.setRed(seek_red);
+                params.setGreen(seek_green);
+                params.setBlue(seek_blue);
                 new Background().execute(params);
             }
 
@@ -105,13 +117,14 @@ public class RGB {
     class Background extends AsyncTask<RGB.MyTaskParams, Void, Bitmap> {
         @Override
         protected Bitmap doInBackground(RGB.MyTaskParams... params) {
+            ScriptC_parallel parallel_script = new ScriptC_parallel(rs);
             Bitmap loc_bitmap = params[0].bitmap.copy(params[0].bitmap.getConfig(), true);
             Allocation inalloc = Allocation.createFromBitmap(rs, params[0].bitmap, Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
             Allocation outalloc = Allocation.createFromBitmap(rs, loc_bitmap, Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
-            ScriptC_parallel parallel_script = new ScriptC_parallel(rs);
-            parallel_script.set_red(params[0].k[0]);
-            parallel_script.set_green(params[0].k[1]);
-            parallel_script.set_blue(params[0].k[2]);
+
+            parallel_script.invoke_setRed(params[0].k[0]);
+            parallel_script.invoke_setGreen(params[0].k[1]);
+            parallel_script.invoke_setBlue(params[0].k[2]);
             //parallel_script.forEach_parallel(outalloc);
             parallel_script.forEach_root(inalloc,outalloc);
             outalloc.copyTo(loc_bitmap);
@@ -134,8 +147,9 @@ public class RGB {
             this.k[1] = k[1];
             this.k[2] = k[2];*/
         }
-        void setRed (int k){
-            this.k[0] = k;
+        void setRed (int c){
+
+            k[0] = c;
         }
         void setGreen (int k){
             this.k[1] = k;

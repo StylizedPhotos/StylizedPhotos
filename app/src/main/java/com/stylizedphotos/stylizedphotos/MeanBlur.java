@@ -124,19 +124,18 @@ public class MeanBlur {
     class Background extends AsyncTask<MyTaskParams, Void, Bitmap> {
         @Override
         protected Bitmap doInBackground(MyTaskParams... params) {
-//            ScriptC_RGB parallel_script = new ScriptC_RGB(rs);
+            ScriptC_MeanBlur parallel_script = new ScriptC_MeanBlur(rs);
             Bitmap loc_bitmap = params[0].bitmap.copy(params[0].bitmap.getConfig(), true);
-//            Allocation inalloc = Allocation.createFromBitmap(rs, params[0].bitmap, Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
-//            Allocation outalloc = Allocation.createFromBitmap(rs, loc_bitmap, Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
-//
-//            //parallel_script.
-//            parallel_script.invoke_setGreen(params[0].k[1]);
-//            parallel_script.invoke_setBlue(params[0].k[2]);
-//            //parallel_script.forEach_parallel(outalloc);
-//            parallel_script.forEach_root(inalloc,outalloc);
-//            outalloc.copyTo(loc_bitmap);
+            Allocation inalloc = Allocation.createFromBitmap(rs, params[0].bitmap, Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
+            Allocation outalloc = Allocation.createFromBitmap(rs, loc_bitmap, Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
+
+            parallel_script.set_gIn(inalloc);
+            parallel_script.set_gOut(outalloc);
+            parallel_script.set_height(loc_bitmap.getHeight());
+            parallel_script.set_width(loc_bitmap.getWidth());
+            parallel_script.forEach_root(inalloc,outalloc);
+            outalloc.copyTo(loc_bitmap);
             return loc_bitmap;
-           // return loc_bitmap;
         }
 
         @Override

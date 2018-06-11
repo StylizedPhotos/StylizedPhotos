@@ -1,21 +1,13 @@
 package com.stylizedphotos.stylizedphotos;
 
-import android.content.Context;
+
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.renderscript.ScriptC;
-import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.support.v8.renderscript.RenderScript;
+import android.support.v8.renderscript.Allocation;
 
-import android.renderscript.Allocation;
-import android.renderscript.RenderScript;
-
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class MeanBlur {
@@ -34,8 +26,9 @@ public class MeanBlur {
             public void onStopTrackingTouch(SeekBar seekBar) {
               //  MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
                // new Background().execute(params);
-
-                filterScreen.RefreshImage(FilterFunction(bitmap));
+              //  filterScreen.RefreshImage(FilterFunction(bitmap));
+                MeanBlur.MyTaskParams params = new MeanBlur.MyTaskParams(bitmap);
+                new MeanBlur.Background().execute(params);
             }
 
             @Override
@@ -131,12 +124,19 @@ public class MeanBlur {
     class Background extends AsyncTask<MyTaskParams, Void, Bitmap> {
         @Override
         protected Bitmap doInBackground(MyTaskParams... params) {
+//            ScriptC_RGB parallel_script = new ScriptC_RGB(rs);
             Bitmap loc_bitmap = params[0].bitmap.copy(params[0].bitmap.getConfig(), true);
-            Allocation alloc = Allocation.createFromBitmap(rs, loc_bitmap);
-            ScriptC_parallel parallel_script = new ScriptC_parallel(rs);
-            //parallel_script.forEach_parallel(alloc);
-            alloc.copyTo(loc_bitmap);
+//            Allocation inalloc = Allocation.createFromBitmap(rs, params[0].bitmap, Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
+//            Allocation outalloc = Allocation.createFromBitmap(rs, loc_bitmap, Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
+//
+//            //parallel_script.
+//            parallel_script.invoke_setGreen(params[0].k[1]);
+//            parallel_script.invoke_setBlue(params[0].k[2]);
+//            //parallel_script.forEach_parallel(outalloc);
+//            parallel_script.forEach_root(inalloc,outalloc);
+//            outalloc.copyTo(loc_bitmap);
             return loc_bitmap;
+           // return loc_bitmap;
         }
 
         @Override
@@ -148,14 +148,10 @@ public class MeanBlur {
     //this is a warper inorder to send the image with the seekbar value
     private static class MyTaskParams {
         Bitmap bitmap;
-        int k;
-        float [][] kernal;
-        MyTaskParams(Bitmap bitmap, int k, Matrix kernal ) {
+        float [][] kernel;
+        MyTaskParams(Bitmap bitmap)
+        {
             this.bitmap = bitmap;
-            this.k = k;
-            for(int i=0;i<kernal.getRows();i++)
-                for(int j=0;j<kernal.getCols();j++)
-                    this.kernal[i][j] = kernal.getVal(i,j);
         }
     }
 }

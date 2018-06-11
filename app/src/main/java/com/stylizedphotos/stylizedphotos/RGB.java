@@ -1,11 +1,13 @@
 package com.stylizedphotos.stylizedphotos;
 
+
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.renderscript.Allocation;
-import android.renderscript.RenderScript;
+import android.support.v8.renderscript.ScriptC;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.support.v8.renderscript.RenderScript;
+import android.support.v8.renderscript.Allocation;
 
 import java.util.ArrayList;
 
@@ -117,7 +119,7 @@ public class RGB {
     class Background extends AsyncTask<RGB.MyTaskParams, Void, Bitmap> {
         @Override
         protected Bitmap doInBackground(RGB.MyTaskParams... params) {
-            ScriptC_parallel parallel_script = new ScriptC_parallel(rs);
+            ScriptC_RGB parallel_script = new ScriptC_RGB(rs);
             Bitmap loc_bitmap = params[0].bitmap.copy(params[0].bitmap.getConfig(), true);
             Allocation inalloc = Allocation.createFromBitmap(rs, params[0].bitmap, Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
             Allocation outalloc = Allocation.createFromBitmap(rs, loc_bitmap, Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);

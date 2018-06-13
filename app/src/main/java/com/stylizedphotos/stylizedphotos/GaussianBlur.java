@@ -95,11 +95,18 @@ public class GaussianBlur {
 
     private static Bitmap FilterFunction(Bitmap image)
     {
-        float arr[][] = {   {1,2,1},
-                            {2,4,2},
-                            {1,4,1}};
-        Matrix ker = new Matrix(3,3,arr);
-        return Matrix.convolution(ker,image);
+        //float arr3[][] = {  {1,2,1},
+        //                   {2,4,2},
+        //                   {1,4,1}};
+        //float arr1[][] = {{1},{4},{7},{4},{1}};
+        //float arr2[][] = {{1,4,7,4,1}};
+        float arr1[][] = {{1},{76},{1992},{20199},{80576},{127641},{80576},{20199},{1992},{76},{1}};
+        float arr2[][] = {{1,76,1992,20199,80576,127641,80576,20199,1992,76,1}};
+        Matrix ker1 = new Matrix(11,1,arr1);
+        Matrix ker2 = new Matrix(1,11,arr2);
+        return Matrix.convolution(ker2, Matrix.convolution(ker1,image,true),true);
+
+
         /*
         Bitmap loc_bitmap = image.copy(image.getConfig(), true);
         for (int i=0;i<loc_bitmap.getHeight();i++)

@@ -1,6 +1,7 @@
 package com.stylizedphotos.stylizedphotos;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 
 
 public class Matrix {
@@ -70,7 +71,7 @@ public class Matrix {
     }
 
 
-    public static Bitmap convolution(Matrix kernel, Bitmap image)
+    public static Bitmap convolution(Matrix kernel, Bitmap image,boolean toSum )
     {
         int i, j, ii, jj, m, n, mm, nn,sum=0, width=image.getWidth(), height=image.getHeight(),ker_cols=kernel.getCols(),ker_rows=kernel.getRows();
         int[] center = new int [2];
@@ -106,15 +107,32 @@ public class Matrix {
                             temp_red += (intArray[ii*width+jj] >> 16 & 0xff) * ker_vals[mm][nn];
                             temp_green += (intArray[ii*width+jj] >> 8 & 0xff) * ker_vals[mm][nn];
                             temp_blue += (intArray[ii*width+jj] & 0xff) * ker_vals[mm][nn];
-                            sum+=ker_vals[m][n];
+                            if(toSum==true)
+                                sum+=ker_vals[m][n];
                         }
                     }
                 }
                 //set the new value
                 new_color = 0;
-                temp_red = (temp_red/sum)%256;//to prevent sliding
-                temp_green = (temp_green/sum)%256;//to prevent sliding
-                temp_blue = (temp_blue/sum)%256;//to prevent sliding
+              //  if(sum==0)
+                   // sum=1;
+                if(toSum == true) {
+                    temp_red = temp_red / sum;//to prevent sliding
+                    temp_green = temp_green / sum;//to prevent sliding
+                    temp_blue = temp_blue / sum;//to prevent sliding
+                }
+                if(temp_red>255)
+                    temp_red=255;
+                if(temp_blue>255)
+                    temp_blue=255;
+                if(temp_green>255)
+                temp_green=255;
+                if(temp_red<0)
+                    temp_red=0;
+                if(temp_blue<0)
+                    temp_blue=0;
+                if(temp_green<0)
+                    temp_green=0;
                 new_color = new_color | (temp_red << 16) | (temp_green << 8) | temp_blue;
                 intArray[i*width+j]=new_color;
                 sum=0;
@@ -124,14 +142,10 @@ public class Matrix {
             }
         }
 
-
-
-
         Bitmap out2 = Bitmap.createBitmap(intArray, width, height, Bitmap.Config.RGB_565);
 
-
-
-
+        return out2;
+    }
 
 
 
@@ -203,8 +217,7 @@ public class Matrix {
 //                out.setPixel(j,i,arr[j][i]);
 //            }
 //        }
-        return out2;
-    }
+
 
 
 

@@ -7,16 +7,13 @@ rs_allocation gIn;
 rs_allocation gOut;
 
 static float3 GetPixel(int32_t x, int32_t y) {
-	if (x < 0) {
+	if (x < 0)
         x = 0;
-    } else if (x >= width) {
+    else if (x >= width)
         x = width - 1;
-    }
-    if (y < 0) {
+    if (y < 0)
         y = 0;
-    } else if (y >= height) {
-        y = height - 1;
-    }
+    y = height - 1;
     float4 theF4 = rsUnpackColor8888(*(const uchar4*)rsGetElementAt(gIn, x, y));
     return theF4.rgb;
 }

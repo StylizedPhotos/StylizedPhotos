@@ -54,28 +54,28 @@ public class FilterScreen extends AppCompatActivity {
                     linearLayout.addView(gaussianBlur.slider_array.get(i));
                 }
                 break;
-           /* case 2:
-                MeanBlur filter = new MeanBlur(bitmap, this);
-                for (int i = 0; i < filter.slider_array.size(); i++) {
+            case 2:
+                Sharpening Sharpening = new Sharpening(bitmap, this);
+                for (int i = 0; i < Sharpening.slider_array.size(); i++) {
                     LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
-                    linearLayout.addView(filter.names.get(i));
-                    linearLayout.addView(filter.slider_array.get(i));
+                    linearLayout.addView(Sharpening.names.get(i));
+                    linearLayout.addView(Sharpening.slider_array.get(i));
                 }
                 break;
             case 3:
-                MeanBlur filter = new MeanBlur(bitmap, this);
-                for (int i = 0; i < filter.slider_array.size(); i++) {
+                EdgeDetection EdgeDetection = new EdgeDetection(bitmap, this);
+                for (int i = 0; i < EdgeDetection.slider_array.size(); i++) {
                     LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
-                    linearLayout.addView(filter.names.get(i));
-                    linearLayout.addView(filter.slider_array.get(i));
+                    linearLayout.addView(EdgeDetection.names.get(i));
+                    linearLayout.addView(EdgeDetection.slider_array.get(i));
                 }
-                break;*/
+                break;
             case 4:
-                RGB filter = new RGB(bitmap, this);
-                for (int i = 0; i < filter.slider_array.size(); i++) {
+                RGB RGB = new RGB(bitmap, this);
+                for (int i = 0; i < RGB.slider_array.size(); i++) {
                     LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
-                    linearLayout.addView(filter.names.get(i));
-                    linearLayout.addView(filter.slider_array.get(i));
+                    linearLayout.addView(RGB.names.get(i));
+                    linearLayout.addView(RGB.slider_array.get(i));
                 }
                 break;
             /*case 5:

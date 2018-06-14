@@ -1,7 +1,11 @@
 package com.stylizedphotos.stylizedphotos;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 
 
 public class Matrix {
@@ -77,10 +81,15 @@ public class Matrix {
         int[] center = new int [2];
         float [][] ker_vals = new float[ker_rows][ker_cols];
         int new_color;
-        int temp_red = 0, temp_green = 0, temp_blue = 0;
+        int temp_red = 0, temp_green = 0, temp_blue = 0,max=0;
+        double fred=0,fgreen=0,fblue=0;
         int[] intArray = new int[image.getWidth()*image.getHeight()];// 1d array of ints to get image
+        double[] floatArray = new double[image.getWidth()*image.getHeight()];// 1d array of ints to get image
         image.getPixels(intArray, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight()); // pixels to int array
-
+        for(i=0;i<intArray.length;i++)
+        {
+            floatArray[i] = (float)intArray[i]/255;
+        }
         for(i=0;i<ker_rows;i++)
             for(j=0;j<ker_cols;j++)
                 ker_vals[i][j]=kernel.getVal(i,j);
@@ -104,22 +113,58 @@ public class Matrix {
                         // ignore input samples which are out of bound
                         if (ii >= 0 && ii < height && jj >= 0 && jj <  width) {
                             //get all pixel value and calculate with them
-                            temp_red += (intArray[ii*width+jj] >> 16 & 0xff) * ker_vals[mm][nn];
-                            temp_green += (intArray[ii*width+jj] >> 8 & 0xff) * ker_vals[mm][nn];
+
+                            temp_red += ((intArray[ii*width+jj] >> 16) & 0xff) * ker_vals[mm][nn];
+                            if(temp_red>max)
+                                max=temp_red;
+                            temp_green += ((intArray[ii*width+jj] >> 8) & 0xff) * ker_vals[mm][nn];
+                            if(temp_green>max)
+                                max=temp_green;
                             temp_blue += (intArray[ii*width+jj] & 0xff) * ker_vals[mm][nn];
+                            if(temp_blue>max)
+                                max=temp_blue;
                             if(toSum==true)
                                 sum+=ker_vals[m][n];
                         }
                     }
                 }
                 //set the new value
-                new_color = 0;
               //  if(sum==0)
                    // sum=1;
                 if(toSum == true) {
                     temp_red = temp_red / sum;//to prevent sliding
                     temp_green = temp_green / sum;//to prevent sliding
                     temp_blue = temp_blue / sum;//to prevent sliding
+                }
+                else
+                {
+//                    max/=255;
+//                    if (max==0)
+//                        max=1;
+                    //temp_red = temp_red /max;//to prevent sliding
+//                    fred= temp_red*0.2;
+//                    fgreen= temp_green*0.7;
+//                    fblue= temp_blue*0.07;
+//                    temp_red=(int)fred;
+//                    temp_green=(int)fgreen;
+//                    temp_blue=(int)fblue;
+                    //temp_green = temp_green /max;//to prevent sliding
+                    //temp_blue = temp_blue  /max;//to prevent sliding
+//                    if(temp_red < 0)
+//                        temp_red*=(-1);
+//                    if(temp_blue < 0)
+//                        temp_blue*=(-1);
+//                    if(temp_green < 0)
+//                        temp_green*=(-1);
+//                    max=0;
+
+
+
+                    //paint.setColorFilter(filter);
+
+
+
+
                 }
                 if(temp_red>255)
                     temp_red=255;
@@ -133,7 +178,7 @@ public class Matrix {
                     temp_blue=0;
                 if(temp_green<0)
                     temp_green=0;
-                new_color = new_color | (temp_red << 16) | (temp_green << 8) | temp_blue;
+                new_color = ((255 & 0xff) <<24 )| ((temp_red & 0xff) << 16) | ((temp_green & 0xff) << 8) | (temp_blue & 0xff);
                 intArray[i*width+j]=new_color;
                 sum=0;
                 temp_red = 0;
@@ -142,14 +187,28 @@ public class Matrix {
             }
         }
 
-        Bitmap out2 = Bitmap.createBitmap(intArray, width, height, Bitmap.Config.RGB_565);
+        Bitmap out2 = Bitmap.createBitmap(intArray, width, height, Bitmap.Config.ARGB_8888);
 
         return out2;
     }
 
 
 
+private Bitmap getGrayscale_ColorMatrixColorFilter(Bitmap src){
+int width = src.getWidth();
+int height = src.getHeight();
 
+Bitmap dest = Bitmap.createBitmap(width, height,
+Bitmap.Config.RGB_565);
+Canvas canvas = new Canvas(dest);
+Paint paint = new Paint();
+ColorMatrix colorMatrix = new ColorMatrix();
+colorMatrix.setSaturation(0); //value of 0 maps the color to gray-scale
+ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorMatrix);
+paint.setColorFilter(filter);
+canvas.drawBitmap(src, 0, 0, paint);
+return dest;
+}
 
 
 
@@ -222,3 +281,5 @@ public class Matrix {
 
 
 }
+
+

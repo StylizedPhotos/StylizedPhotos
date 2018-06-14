@@ -97,10 +97,12 @@ public class MeanBlur {
     {
         float arr1[][] = {{1},{1},{1},{1},{1},{1},{1},{1},{1},{1},{1}};
         float arr2[][] = {{1,1,1,1,1,1,1,1,1,1,1}};
+        //float arr3[][]={{1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1}};
+
         Matrix ker1 = new Matrix(11,1,arr1);
         Matrix ker2 = new Matrix(1,11,arr2);
-
-
+        //Matrix ker3 = new Matrix(11,11,arr3);
+        //return Matrix.convolution(ker2,image,true);
         return Matrix.convolution(ker2, Matrix.convolution(ker1,image,true),true);
         /*
         Bitmap loc_bitmap = image.copy(image.getConfig(), true);

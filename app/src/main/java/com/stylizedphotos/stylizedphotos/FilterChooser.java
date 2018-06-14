@@ -36,8 +36,6 @@ public class FilterChooser extends AppCompatActivity
         filters_names.add("Dominant Color Highlight");
         Bundle extras = getIntent().getExtras();
         final Uri imageUri = Uri.parse(extras.getString("imageUri"));
-
-        //Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         Bitmap bitmap = null;  //convert the uri to a bitmap
         try {
             bitmap = getBitmapFromUri(imageUri);

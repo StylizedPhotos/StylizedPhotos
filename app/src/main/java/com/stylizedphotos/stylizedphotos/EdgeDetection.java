@@ -30,7 +30,7 @@ public class EdgeDetection {
                 //  MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
                 // new Background().execute(params);
 
-                filterScreen.RefreshImage(FilterFunction(getGrayscale_ColorMatrixColorFilter(bitmap)));
+                filterScreen.RefreshImage(FilterFunction((bitmap)));
             }
 
             @Override

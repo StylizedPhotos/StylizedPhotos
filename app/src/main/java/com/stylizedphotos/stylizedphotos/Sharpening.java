@@ -99,7 +99,10 @@ public class Sharpening {
                         {-1,5,-1},
                         {0,-1,0}};
         Matrix ker = new Matrix (3,3,arr);
-        return Matrix.convolution(ker,image,false);
+      //  Bitmap temp_bitmap = HelpMethods.pad(image,1,1);
+      //  temp_bitmap = Matrix.convolution(ker,temp_bitmap,false);
+     //   temp_bitmap = Bitmap.createBitmap(temp_bitmap, 1, 1, image.getWidth(), image.getHeight());
+        return Matrix.convolution(ker, image,false);
     }
 
     private void RefreshImage(Bitmap bitmap) {

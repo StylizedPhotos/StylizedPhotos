@@ -93,7 +93,7 @@ public class MeanBlur {
         slider_array.add(s3);
     }
 
-    private static Bitmap FilterFunction(Bitmap image)
+    private Bitmap FilterFunction(Bitmap image)
     {
         float arr1[][] = {{1},{1},{1},{1},{1},{1},{1},{1},{1},{1},{1}};
         float arr2[][] = {{1,1,1,1,1,1,1,1,1,1,1}};
@@ -103,7 +103,10 @@ public class MeanBlur {
         Matrix ker2 = new Matrix(1,11,arr2);
         //Matrix ker3 = new Matrix(11,11,arr3);
         //return Matrix.convolution(ker2,image,true);
-        return Matrix.convolution(ker2, Matrix.convolution(ker1,image,true),true);
+        Bitmap temp_bitmap = HelpMethods.pad(image,100,100);
+        temp_bitmap = Matrix.convolution(ker2, Matrix.convolution(ker1,temp_bitmap,true),true);
+        temp_bitmap = Bitmap.createBitmap(temp_bitmap, 49, 49, image.getWidth(), image.getHeight());
+        return temp_bitmap;
         /*
         Bitmap loc_bitmap = image.copy(image.getConfig(), true);
         for (int i=0;i<loc_bitmap.getHeight();i++)

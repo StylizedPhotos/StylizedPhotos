@@ -55,19 +55,19 @@ public class FilterScreen extends AppCompatActivity {
                 }
                 break;
             case 2:
-                Sharpening Sharpening = new Sharpening(bitmap, this);
-                for (int i = 0; i < Sharpening.slider_array.size(); i++) {
-                    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
-                    linearLayout.addView(Sharpening.names.get(i));
-                    linearLayout.addView(Sharpening.slider_array.get(i));
-                }
-                break;
-            case 3:
                 EdgeDetection EdgeDetection = new EdgeDetection(bitmap, this);
                 for (int i = 0; i < EdgeDetection.slider_array.size(); i++) {
                     LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
                     linearLayout.addView(EdgeDetection.names.get(i));
                     linearLayout.addView(EdgeDetection.slider_array.get(i));
+                }
+                break;
+            case 3:
+                Sharpening Sharpening = new Sharpening(bitmap, this);
+                for (int i = 0; i < Sharpening.slider_array.size(); i++) {
+                    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
+                    linearLayout.addView(Sharpening.names.get(i));
+                    linearLayout.addView(Sharpening.slider_array.get(i));
                 }
                 break;
             case 4:

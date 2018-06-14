@@ -57,7 +57,7 @@ public class FilterChooser extends AppCompatActivity
 
             but.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             but.setText(filters_names.get(i));
-            but.setBackground((this.getResources().getDrawable(R.drawable.button)));
+            but.setBackground(this.getDrawable(R.drawable.button));
             but.setId(i);
             filters.addView(but);
             but.setOnClickListener(new View.OnClickListener() {

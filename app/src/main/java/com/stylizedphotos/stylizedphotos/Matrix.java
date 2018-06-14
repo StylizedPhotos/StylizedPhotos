@@ -123,16 +123,9 @@ public class Matrix {
                         // ignore input samples which are out of bound
                         if (ii >= 0 && ii < height && jj >= 0 && jj <  width) {
                             //get all pixel value and calculate with them
-
                             temp_red += ((intArray[ii*width+jj] >> 16) & 0xff) * ker_vals[mm][nn];
-                            if(temp_red>max)
-                                max=temp_red;
                             temp_green += ((intArray[ii*width+jj] >> 8) & 0xff) * ker_vals[mm][nn];
-                            if(temp_green>max)
-                                max=temp_green;
                             temp_blue += (intArray[ii*width+jj] & 0xff) * ker_vals[mm][nn];
-                            if(temp_blue>max)
-                                max=temp_blue;
                             if(toSum==true)
                                 sum+=ker_vals[m][n];
                         }

@@ -9,6 +9,7 @@ import android.os.ParcelFileDescriptor;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -19,12 +20,15 @@ import java.util.ArrayList;
 public class FilterChooser extends AppCompatActivity
 {
     //int number_of_filters=8;// a constant that change when the user add an external filter
+    //private ImageButton mImageButton;
     ArrayList<String> filters_names = new ArrayList<String>();
     private static final int RESULT_OPEN_FILTER_SCREEN = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter_chooser);
+
+
 
         filters_names.add("Mean blur");
         filters_names.add("Gaussian blur");
@@ -47,9 +51,13 @@ public class FilterChooser extends AppCompatActivity
         for(int i=0;i<filters_names.size();i++) {
             final int opcode = i;
             LinearLayout filters = (LinearLayout) findViewById(R.id.filter_layout);
-            Button but = new Button(this);
+           Button but = new Button(this);
+           // ImageButton but = new ImageButton(this);
+
+
             but.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             but.setText(filters_names.get(i));
+            but.setBackground((this.getResources().getDrawable(R.drawable.button)));
             but.setId(i);
             filters.addView(but);
             but.setOnClickListener(new View.OnClickListener() {

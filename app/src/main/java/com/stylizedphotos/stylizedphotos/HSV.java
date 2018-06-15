@@ -4,6 +4,7 @@ package com.stylizedphotos.stylizedphotos;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.ScriptC;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -17,27 +18,35 @@ public class HSV {
     public ArrayList<TextView> names = new ArrayList<TextView>();
     RenderScript rs;
     FilterScreen filterScreenContext;
-    private int seek_red = 0;
-    private int seek_green = 0;
-    private int seek_blue = 0;
+    private float seek_hue = 0;
+    private float seek_saturation = 0;
+    private float seek_value = 0;
     private float[][] floatArray;
+    private float [] float1dArray;
 
     public HSV (final Bitmap bitmap, final FilterScreen filterScreen){
         filterScreenContext = filterScreen;
         rs = RenderScript.create(filterScreen);
         floatArray = new float[bitmap.getWidth()*bitmap.getHeight()][3];// 1d array of ints to get image
+        float1dArray = new float[bitmap.getWidth()*bitmap.getHeight()*3];
         toHSV(bitmap);
-        SeekBar red= new SeekBar(filterScreen);
-        red.setMax(100);
-        red.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        for(int i=0,j=0; j<float1dArray.length;j+=3,i++)
+        {
+            float1dArray[j] = floatArray[i][0];
+            float1dArray[j+1] = floatArray[i][1];
+            float1dArray[j+2] = floatArray[i][2];
+        }
+        SeekBar hue= new SeekBar(filterScreen);
+        hue.setMax(359);
+        hue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-//                MyTaskParams params = new MyTaskParams(bitmap);
-//                seek_red = seekBar.getProgress();
-//                params.setRed(seek_red);
-//                params.setGreen(seek_green);
-//                params.setBlue(seek_blue);
-//                new Background().execute(params);
+                MyTaskParams params = new MyTaskParams(bitmap);
+                seek_hue = seekBar.getProgress();
+                params.setHue(seek_hue);
+                params.setSaturation(seek_saturation);
+                params.setValue(seek_value);
+                new Background().execute(params);
                 //Bitmap loc_bitmap = Bitmap.createBitmap(FilterFunction(bitmap.getWidth()*bitmap.getHeight()),bitmap.getWidth(),bitmap.getHeight())
                 //filterScreen.RefreshImage();
             }
@@ -53,20 +62,21 @@ public class HSV {
             }
         });
         TextView n1 = new TextView(filterScreen);
-        n1.setText("Red");
+        n1.setText("Hue");
         names.add(n1);
-        slider_array.add(red);
-        SeekBar green = new SeekBar(filterScreen);
-        green.setMax(100);
-        green.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        slider_array.add(hue);
+        SeekBar saturation = new SeekBar(filterScreen);
+        saturation.setMax(100);
+        saturation.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 // TODO Auto-generated method stub
                 MyTaskParams params = new MyTaskParams(bitmap);
-                seek_green = seekBar.getProgress();
-                params.setRed(seek_red);
-                params.setGreen(seek_green);
-                params.setBlue(seek_blue);
+                seek_saturation = seekBar.getProgress();
+                seek_saturation/=100;
+                params.setHue(seek_hue);
+                params.setSaturation(seek_saturation);
+                params.setValue(seek_value);
                 new Background().execute(params);
             }
 
@@ -83,20 +93,20 @@ public class HSV {
             }
         });
         TextView n2 = new TextView(filterScreen);
-        n2.setText("Green");
+        n2.setText("Saturation");
         names.add(n2);
-        slider_array.add(green);
-        SeekBar blue = new SeekBar(filterScreen);
-        blue.setMax(100);
-        blue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        slider_array.add(saturation);
+        SeekBar value = new SeekBar(filterScreen);
+        value.setMax(100);
+        value.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 // TODO Auto-generated method stub
                 MyTaskParams params = new MyTaskParams(bitmap);
-                seek_blue = seekBar.getProgress();
-                params.setRed(seek_red);
-                params.setGreen(seek_green);
-                params.setBlue(seek_blue);
+                seek_value = seekBar.getProgress();
+                params.setHue(seek_hue);
+                params.setSaturation(seek_saturation);
+                params.setValue(seek_value);
                 new Background().execute(params);
             }
 
@@ -112,9 +122,9 @@ public class HSV {
             }
         });
         TextView n3 = new TextView(filterScreen);
-        n3.setText("Blue");
+        n3.setText("Value");
         names.add(n3);
-        slider_array.add(blue);
+        slider_array.add(value);
     }
     private void FilterFunction(int size)
     {
@@ -132,17 +142,30 @@ public class HSV {
     class Background extends AsyncTask<HSV.MyTaskParams, Void, Bitmap> {
         @Override
         protected Bitmap doInBackground(HSV.MyTaskParams... params) {
-            ScriptC_RGB parallel_script = new ScriptC_RGB(rs);
+            ScriptC_HSV parallel_script = new ScriptC_HSV(rs);
             Bitmap loc_bitmap = params[0].bitmap.copy(params[0].bitmap.getConfig(), true);
             Allocation inalloc = Allocation.createFromBitmap(rs, params[0].bitmap, Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
             Allocation outalloc = Allocation.createFromBitmap(rs, loc_bitmap, Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
-
-            parallel_script.invoke_setRed(params[0].k[0]);
-            parallel_script.invoke_setGreen(params[0].k[1]);
-            parallel_script.invoke_setBlue(params[0].k[2]);
-            //parallel_script.forEach_parallel(outalloc);
+            Allocation inarray = Allocation.createSized(rs, Element.F32(rs), loc_bitmap.getWidth()*loc_bitmap.getHeight()*3);
+            Allocation outarray = Allocation.createSized(rs, Element.F32(rs), loc_bitmap.getWidth()*loc_bitmap.getHeight()*3);
+            inarray.copy1DRangeFrom(0,loc_bitmap.getWidth()*loc_bitmap.getHeight()*3,float1dArray);
+            parallel_script.set_inarray(inarray);
+            parallel_script.set_outarray(outarray);
+            parallel_script.set_width(loc_bitmap.getWidth());
+            parallel_script.set_hue(params[0].seek_hue);
+            parallel_script.set_saturation(params[0].seek_saturation);
+            parallel_script.set_value(params[0].seek_value);
             parallel_script.forEach_root(inalloc,outalloc);
-            outalloc.copyTo(loc_bitmap);
+            outarray.copy1DRangeTo(0,loc_bitmap.getWidth()*loc_bitmap.getHeight()*3,float1dArray);
+            for(int i=0,j=0; j<float1dArray.length;j+=3,i++)
+            {
+                floatArray[i][0]=float1dArray[j];
+                floatArray[i][1]=float1dArray[j+1];
+                floatArray[i][2]=float1dArray[j+2];
+            }
+            //outalloc.copyTo(floatArray);
+            //outalloc.copyTo(loc_bitmap);
+            loc_bitmap = toRGB(floatArray,loc_bitmap.getWidth(),loc_bitmap.getHeight());
             return loc_bitmap;
         }
 
@@ -155,23 +178,15 @@ public class HSV {
     //this is a warper inorder to send the image with the seekbar value
     private static class MyTaskParams {
         Bitmap bitmap;
-        int [] k = new int[3];
+        private float seek_hue;
+        private float seek_saturation;
+        private float seek_value;
         MyTaskParams(Bitmap bitmap ) {
             this.bitmap = bitmap;
-            /*this.k[0] = k[0];
-            this.k[1] = k[1];
-            this.k[2] = k[2];*/
         }
-        void setRed (int c){
-
-            k[0] = c;
-        }
-        void setGreen (int k){
-            this.k[1] = k;
-        }
-        void setBlue (int k){
-            this.k[2] = k;
-        }
+        void setHue (float k){ seek_hue = k; }
+        void setSaturation (float k){ seek_saturation = k; }
+        void setValue (float k){ seek_value = k; }
     }
 
     private void toHSV(Bitmap image)
@@ -182,6 +197,20 @@ public class HSV {
         for (i=0;i<image.getHeight()*image.getWidth();i++)
         {
             Color.RGBToHSV((Color.red(intArray[i])),(Color.green(intArray[i])) ,(Color.blue(intArray[i])),floatArray[i]);
+            floatArray[i][2]*=100;
         }
+    }
+
+    private Bitmap toRGB(float [][] arr,int width, int hight)
+    {
+        int i;
+        int[] intArray = new int[arr.length];// 1d array of ints to get image
+         // pixels to int array
+        for (i=0;i<arr.length;i++)
+        {
+            intArray[i] = Color.HSVToColor(floatArray[i]);
+        }
+        Bitmap temp_image = Bitmap.createBitmap(intArray, width, hight, Bitmap.Config.ARGB_8888);
+        return temp_image;
     }
 }

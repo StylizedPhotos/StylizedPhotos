@@ -96,10 +96,10 @@ public class Matrix {
         // image
         double[] floatArray = new double[image.getWidth()*image.getHeight()];// 1d array of ints to get image
         image.getPixels(intArray, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight()); // pixels to int array
-        for(i=0;i<intArray.length;i++)
+        /*for(i=0;i<intArray.length;i++)
         {
             floatArray[i] = (float)intArray[i]/255;
-        }
+        }*/
         for(i=0;i<ker_rows;i++)
             for(j=0;j<ker_cols;j++)
                 ker_vals[i][j]=kernel.getVal(i,j);

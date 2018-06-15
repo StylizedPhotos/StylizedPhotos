@@ -149,10 +149,7 @@ public class RGB {
             this.k[1] = k[1];
             this.k[2] = k[2];*/
         }
-        void setRed (int c){
-
-            k[0] = c;
-        }
+        void setRed (int c){ k[0] = c; }
         void setGreen (int k){
             this.k[1] = k;
         }

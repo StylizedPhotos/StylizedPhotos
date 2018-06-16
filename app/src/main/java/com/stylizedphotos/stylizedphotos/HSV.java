@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v8.renderscript.Element;
-import android.support.v8.renderscript.ScriptC;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.support.v8.renderscript.RenderScript;
@@ -21,20 +20,24 @@ public class HSV {
     private float seek_hue = 0;
     private float seek_saturation = 0;
     private float seek_value = 0;
-    private float[][] floatArray;
+    private float[][] floatArrayOrigin;
+    private float[][] floatArrayOut;
     private float [] float1dArray;
+    private float [] float1dArrayout;
 
     public HSV (final Bitmap bitmap, final FilterScreen filterScreen){
         filterScreenContext = filterScreen;
         rs = RenderScript.create(filterScreen);
-        floatArray = new float[bitmap.getWidth()*bitmap.getHeight()][3];// 1d array of ints to get image
+        floatArrayOrigin = new float[bitmap.getWidth()*bitmap.getHeight()][3];// 1d array of ints to get image
+        floatArrayOut = new float[bitmap.getWidth()*bitmap.getHeight()][3];
         float1dArray = new float[bitmap.getWidth()*bitmap.getHeight()*3];
+        float1dArrayout = new float[bitmap.getWidth()*bitmap.getHeight()*3];
         toHSV(bitmap);
         for(int i=0,j=0; j<float1dArray.length;j+=3,i++)
         {
-            float1dArray[j] = floatArray[i][0];
-            float1dArray[j+1] = floatArray[i][1];
-            float1dArray[j+2] = floatArray[i][2];
+            float1dArray[j] = floatArrayOrigin[i][0];
+            float1dArray[j+1] = floatArrayOrigin[i][1];
+            float1dArray[j+2] = floatArrayOrigin[i][2];
         }
         SeekBar hue= new SeekBar(filterScreen);
         hue.setMax(359);
@@ -66,13 +69,14 @@ public class HSV {
         names.add(n1);
         slider_array.add(hue);
         SeekBar saturation = new SeekBar(filterScreen);
-        saturation.setMax(100);
+        saturation.setMax(201);
+        saturation.setProgress(100);
         saturation.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 // TODO Auto-generated method stub
                 MyTaskParams params = new MyTaskParams(bitmap);
-                seek_saturation = seekBar.getProgress();
+                seek_saturation = seekBar.getProgress()-100;
                 seek_saturation/=100;
                 params.setHue(seek_hue);
                 params.setSaturation(seek_saturation);
@@ -131,7 +135,7 @@ public class HSV {
         int i;
         for(i=0;i<size;i++)
         {
-            floatArray[i][0]+= 50;
+            floatArrayOrigin[i][0]+= 50;
         }
 
     }
@@ -156,16 +160,16 @@ public class HSV {
             parallel_script.set_saturation(params[0].seek_saturation);
             parallel_script.set_value(params[0].seek_value);
             parallel_script.forEach_root(inalloc,outalloc);
-            outarray.copy1DRangeTo(0,loc_bitmap.getWidth()*loc_bitmap.getHeight()*3,float1dArray);
-            for(int i=0,j=0; j<float1dArray.length;j+=3,i++)
+            outarray.copy1DRangeTo(0,loc_bitmap.getWidth()*loc_bitmap.getHeight()*3,float1dArrayout);
+            for(int i=0,j=0; j<float1dArrayout.length;j+=3,i++)
             {
-                floatArray[i][0]=float1dArray[j];
-                floatArray[i][1]=float1dArray[j+1];
-                floatArray[i][2]=float1dArray[j+2];
+                floatArrayOut[i][0]=float1dArrayout[j];
+                floatArrayOut[i][1]=float1dArrayout[j+1];
+                floatArrayOut[i][2]=float1dArrayout[j+2];
             }
-            //outalloc.copyTo(floatArray);
+            //outalloc.copyTo(floatArrayOrigin);
             //outalloc.copyTo(loc_bitmap);
-            loc_bitmap = toRGB(floatArray,loc_bitmap.getWidth(),loc_bitmap.getHeight());
+            loc_bitmap = toRGB(floatArrayOut,loc_bitmap.getWidth(),loc_bitmap.getHeight());
             return loc_bitmap;
         }
 
@@ -196,8 +200,8 @@ public class HSV {
         image.getPixels(intArray, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight()); // pixels to int array
         for (i=0;i<image.getHeight()*image.getWidth();i++)
         {
-            Color.RGBToHSV((Color.red(intArray[i])),(Color.green(intArray[i])) ,(Color.blue(intArray[i])),floatArray[i]);
-            floatArray[i][2]*=100;
+            Color.RGBToHSV((Color.red(intArray[i])),(Color.green(intArray[i])) ,(Color.blue(intArray[i])), floatArrayOrigin[i]);
+            floatArrayOrigin[i][2]*=100;
         }
     }
 
@@ -208,7 +212,7 @@ public class HSV {
          // pixels to int array
         for (i=0;i<arr.length;i++)
         {
-            intArray[i] = Color.HSVToColor(floatArray[i]);
+            intArray[i] = Color.HSVToColor(floatArrayOut[i]);
         }
         Bitmap temp_image = Bitmap.createBitmap(intArray, width, hight, Bitmap.Config.ARGB_8888);
         return temp_image;

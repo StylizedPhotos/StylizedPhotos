@@ -1,11 +1,13 @@
 package com.stylizedphotos.stylizedphotos;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.RenderScript;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 public class DominantColorHighlight {
     public ArrayList<SeekBar> slider_array = new ArrayList<SeekBar>();
     public ArrayList<TextView> names = new ArrayList<TextView>();
+    ImageView huescale;
     RenderScript rs;
     FilterScreen filterScreenContext;
     private float seek_hue = 0;
@@ -64,6 +67,8 @@ public class DominantColorHighlight {
         n1.setText("Hue");
         names.add(n1);
         slider_array.add(hue);
+        huescale = new ImageView(filterScreen);
+        huescale.setImageBitmap(BitmapFactory.decodeResource(filterScreen.getResources(), R.drawable.hue));
         SeekBar saturation = new SeekBar(filterScreen);
         saturation.setMax(41);
         saturation.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

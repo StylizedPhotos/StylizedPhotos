@@ -86,16 +86,21 @@ public class FilterScreen extends AppCompatActivity {
                     linearLayout.addView(HSV.slider_array.get(i));
                 }
                 break;
-            /*case 6:
-                MeanBlur filter = new MeanBlur(bitmap, this);
-                for (int i = 0; i < filter.slider_array.size(); i++) {
+            case 6: {
+                DominantColorRemoval DominantColorRemoval = new DominantColorRemoval(bitmap, this);
+                LinearLayout hue = (LinearLayout) findViewById(R.id.linearLayoutSeek);
+                hue.addView(DominantColorRemoval.huescale);
+                for (int i = 0; i < DominantColorRemoval.slider_array.size(); i++) {
                     LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
-                    linearLayout.addView(filter.names.get(i));
-                    linearLayout.addView(filter.slider_array.get(i));
+                    linearLayout.addView(DominantColorRemoval.names.get(i));
+                    linearLayout.addView(DominantColorRemoval.slider_array.get(i));
                 }
-                break;*/
+            }
+                break;
             case 7:
                 DominantColorHighlight DominantColorHighlight = new DominantColorHighlight(bitmap, this);
+                LinearLayout hue = (LinearLayout) findViewById(R.id.linearLayoutSeek);
+                hue.addView(DominantColorHighlight.huescale);
                 for (int i = 0; i < DominantColorHighlight.slider_array.size(); i++) {
                     LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
                     linearLayout.addView(DominantColorHighlight.names.get(i));

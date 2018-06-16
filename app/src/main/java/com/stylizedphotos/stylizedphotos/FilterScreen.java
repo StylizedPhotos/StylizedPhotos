@@ -93,15 +93,15 @@ public class FilterScreen extends AppCompatActivity {
                     linearLayout.addView(filter.names.get(i));
                     linearLayout.addView(filter.slider_array.get(i));
                 }
-                break;
-            case 7:
-                MeanBlur filter = new MeanBlur(bitmap, this);
-                for (int i = 0; i < filter.slider_array.size(); i++) {
-                    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
-                    linearLayout.addView(filter.names.get(i));
-                    linearLayout.addView(filter.slider_array.get(i));
-                }
                 break;*/
+            case 7:
+                DominantColorHighlight DominantColorHighlight = new DominantColorHighlight(bitmap, this);
+                for (int i = 0; i < DominantColorHighlight.slider_array.size(); i++) {
+                    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
+                    linearLayout.addView(DominantColorHighlight.names.get(i));
+                    linearLayout.addView(DominantColorHighlight.slider_array.get(i));
+                }
+                break;
         }
         //FilterDemo demo = new FilterDemo(bitmap, this);
         //ScrollView scroll = (ScrollView) findViewById(R.id.scrollView2);

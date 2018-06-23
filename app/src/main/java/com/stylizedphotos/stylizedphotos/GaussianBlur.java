@@ -150,4 +150,13 @@ public class GaussianBlur {
             this.k = k;
         }
     }
+
+    public static Bitmap Preview(Bitmap image)
+    {
+        float arr1[][] = {{1},{76},{1992},{20199},{80576},{127641},{80576},{20199},{1992},{76},{1}};
+        float arr2[][] = {{1,76,1992,20199,80576,127641,80576,20199,1992,76,1}};
+        Matrix ker1 = new Matrix(11,1,arr1);
+        Matrix ker2 = new Matrix(1,11,arr2);
+        return Matrix.convolution(ker2, Matrix.convolution(ker1,image,true),true);
+    }
 }

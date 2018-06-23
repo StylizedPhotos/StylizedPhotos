@@ -117,4 +117,13 @@ public class Sharpening {
             this.k = k;
         }
     }
+
+    public static Bitmap Preview(Bitmap image)
+    {
+        float arr[][]={ {0,-1,0},
+                {-1,5,-1},
+                {0,-1,0}};
+        Matrix ker1 = new Matrix(3,3,arr);
+        return Matrix.convolution(ker1,image,false);
+    }
 }

@@ -1,5 +1,6 @@
 package com.stylizedphotos.stylizedphotos;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -12,13 +13,15 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class DominantColorHighlight {
     public ArrayList<SeekBar> slider_array = new ArrayList<SeekBar>();
     public ArrayList<TextView> names = new ArrayList<TextView>();
     ImageView huescale;
     RenderScript rs;
-    FilterScreen filterScreenContext;
+    FilterScreen filterScreenContext = null;
+    Context context = null;
     private float seek_hue = 0;
     private float seek_range = 0;
     private float[][] floatArrayOrigin;
@@ -99,15 +102,11 @@ public class DominantColorHighlight {
         names.add(n2);
         slider_array.add(saturation);
     }
-    private void FilterFunction(int size)
-    {
-        int i;
-        for(i=0;i<size;i++)
-        {
-            floatArrayOrigin[i][0]+= 50;
-        }
 
+    public DominantColorHighlight(Context context){
+        this.context = context;
     }
+
     private void RefreshImage(Bitmap bitmap) {
         filterScreenContext.RefreshImage(bitmap);
     }
@@ -143,7 +142,8 @@ public class DominantColorHighlight {
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            RefreshImage(bitmap);
+            if(filterScreenContext!=null)
+                RefreshImage(bitmap);
         }
 
     }
@@ -183,5 +183,34 @@ public class DominantColorHighlight {
         }
         Bitmap temp_image = Bitmap.createBitmap(intArray, width, hight, Bitmap.Config.ARGB_8888);
         return temp_image;
+    }
+
+    public Bitmap Preview(Bitmap image) {
+        rs = RenderScript.create(context);
+        MyTaskParams params = new MyTaskParams(image);
+        params.setHue(0);
+        params.setRange(10);
+        floatArrayOrigin = new float[image.getWidth()*image.getHeight()][3];// 1d array of ints to get image
+        floatArrayOut = new float[image.getWidth()*image.getHeight()][3];
+        float1dArray = new float[image.getWidth()*image.getHeight()*3];
+        float1dArrayout = new float[image.getWidth()*image.getHeight()*3];
+        toHSV(image);
+        for(int i=0,j=0; j<float1dArray.length;j+=3,i++)
+        {
+            float1dArray[j] = floatArrayOrigin[i][0];
+            float1dArray[j+1] = floatArrayOrigin[i][1];
+            float1dArray[j+2] = floatArrayOrigin[i][2];
+        }
+        Bitmap preview1 = null;
+        try {
+            preview1= new Background().execute(params).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        while (preview1 == null) {}
+        return preview1;
     }
 }

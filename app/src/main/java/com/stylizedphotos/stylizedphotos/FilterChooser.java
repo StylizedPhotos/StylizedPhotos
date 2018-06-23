@@ -3,6 +3,8 @@ package com.stylizedphotos.stylizedphotos;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
@@ -22,6 +24,7 @@ public class FilterChooser extends AppCompatActivity
     //int number_of_filters=8;// a constant that change when the user add an external filter
     //private ImageButton mImageButton;
     ArrayList<String> filters_names = new ArrayList<String>();
+    ArrayList<Button> Buttons = new ArrayList<Button>();
     private static final int RESULT_OPEN_FILTER_SCREEN = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +39,8 @@ public class FilterChooser extends AppCompatActivity
         filters_names.add("Sharpening");
         filters_names.add("RGB");
         filters_names.add("HSV");
-        filters_names.add("Dominant Color Removal");
-        filters_names.add("Dominant Color Highlight");
+        filters_names.add("Color Removal");
+        filters_names.add("Color Highlight");
         Bundle extras = getIntent().getExtras();
         final Uri imageUri = Uri.parse(extras.getString("imageUri"));
         Bitmap bitmap = null;  //convert the uri to a bitmap
@@ -55,10 +58,12 @@ public class FilterChooser extends AppCompatActivity
            // ImageButton but = new ImageButton(this);
 
 
-            but.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            but.setLayoutParams(new LinearLayout.LayoutParams(400, LinearLayout.LayoutParams.MATCH_PARENT));
             but.setText(filters_names.get(i));
-            but.setBackground(this.getDrawable(R.drawable.button));
+
+           // preview.setDensity(1000);
             but.setId(i);
+            Buttons.add(but);
             filters.addView(but);
             but.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -69,6 +74,45 @@ public class FilterChooser extends AppCompatActivity
                 }
             });
         }
+        Bitmap preview = bitmap.createScaledBitmap(bitmap, 200,200,true);
+        Bitmap temp_preview = preview;
+        temp_preview = MeanBlur.Preview(preview);
+        Drawable d = new BitmapDrawable(getResources(), temp_preview);
+        Buttons.get(0).setBackground(d);
+
+        temp_preview = GaussianBlur.Preview(preview);
+        d = new BitmapDrawable(getResources(), temp_preview);
+        Buttons.get(1).setBackground(d);
+
+        temp_preview = EdgeDetection.Preview(preview);
+        d = new BitmapDrawable(getResources(), temp_preview);
+        Buttons.get(2).setBackground(d);
+
+        temp_preview = Sharpening.Preview(preview);
+        d = new BitmapDrawable(getResources(), temp_preview);
+        Buttons.get(3).setBackground(d);
+
+        RGB rgb = new RGB(this);
+        temp_preview = rgb.Preview(preview);
+        d = new BitmapDrawable(getResources(), temp_preview);
+        Buttons.get(4).setBackground(d);
+
+        HSV hsv = new HSV(this);
+        temp_preview = hsv.Preview(preview);
+        d = new BitmapDrawable(getResources(), temp_preview);
+        Buttons.get(5).setBackground(d);
+
+        DominantColorRemoval remove = new DominantColorRemoval(this);
+        temp_preview = remove.Preview(preview);
+        d = new BitmapDrawable(getResources(), temp_preview);
+        Buttons.get(6).setBackground(d);
+
+        DominantColorHighlight highlight = new DominantColorHighlight(this);
+        temp_preview = highlight.Preview(preview);
+        d = new BitmapDrawable(getResources(), temp_preview);
+        Buttons.get(7).setBackground(d);
+        //but.setBackground(d);
+        //Button blurbut = (Button)findViewById(R.1);
         //Button FilterButton = (Button) findViewById(R.id.button1);
 
     }

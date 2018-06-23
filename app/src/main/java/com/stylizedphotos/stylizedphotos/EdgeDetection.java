@@ -139,4 +139,12 @@ public class EdgeDetection {
         canvas.drawBitmap(src, 0, 0, paint);
         return dest;
     }
+    public static Bitmap Preview(Bitmap image)
+    {
+        float arr[][]= {{0, -1, 0,},
+                {-1, 4, -1},
+                {0, -1, 0}};
+        Matrix ker1 = new Matrix(3,3,arr);
+        return Matrix.convolution(ker1,image,false);
+    }
 }

@@ -1,6 +1,7 @@
 package com.stylizedphotos.stylizedphotos;
 
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v8.renderscript.ScriptC;
@@ -10,12 +11,14 @@ import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.Allocation;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class RGB {
     public ArrayList<SeekBar> slider_array = new ArrayList<SeekBar>();
     public ArrayList<TextView> names = new ArrayList<TextView>();
     RenderScript rs;
-    FilterScreen filterScreenContext;
+    FilterScreen filterScreenContext = null;
+    Context context = null;
     private int seek_red = 0;
     private int seek_green = 0;
     private int seek_blue = 0;
@@ -34,8 +37,6 @@ public class RGB {
                 params.setGreen(seek_green);
                 params.setBlue(seek_blue);
                 new Background().execute(params);
-
-                //filterScreen.RefreshImage(FilterFunction(bitmap));
             }
 
             @Override
@@ -112,6 +113,11 @@ public class RGB {
         names.add(n3);
         slider_array.add(blue);
     }
+
+    public RGB(Context context){
+        this.context = context;
+    }
+
     private void RefreshImage(Bitmap bitmap) {
         filterScreenContext.RefreshImage(bitmap);
     }
@@ -127,7 +133,6 @@ public class RGB {
             parallel_script.invoke_setRed(params[0].k[0]);
             parallel_script.invoke_setGreen(params[0].k[1]);
             parallel_script.invoke_setBlue(params[0].k[2]);
-            //parallel_script.forEach_parallel(outalloc);
             parallel_script.forEach_root(inalloc,outalloc);
             outalloc.copyTo(loc_bitmap);
             return loc_bitmap;
@@ -135,7 +140,8 @@ public class RGB {
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            RefreshImage(bitmap);
+            if (filterScreenContext!=null)
+                RefreshImage(bitmap);
         }
 
     }
@@ -145,16 +151,32 @@ public class RGB {
         int [] k = new int[3];
         MyTaskParams(Bitmap bitmap ) {
             this.bitmap = bitmap;
-            /*this.k[0] = k[0];
-            this.k[1] = k[1];
-            this.k[2] = k[2];*/
         }
-        void setRed (int c){ k[0] = c; }
+        void setRed (int k){ this.k[0] = k; }
         void setGreen (int k){
             this.k[1] = k;
         }
         void setBlue (int k){
             this.k[2] = k;
         }
+    }
+
+    public Bitmap Preview(Bitmap image) {
+        rs = RenderScript.create(context);
+        MyTaskParams params = new MyTaskParams(image);
+        params.setRed(50);
+        params.setGreen(30);
+        params.setBlue(100);
+        Bitmap preview1 = null;
+        try {
+             preview1= new Background().execute(params).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        while (preview1 == null) {}
+        return preview1;
     }
 }

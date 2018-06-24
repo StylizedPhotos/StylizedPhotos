@@ -201,7 +201,8 @@ public class FilterScreen extends AppCompatActivity {
                 stream.close();
                 editor.putInt("counter", ++counter);
                 editor.apply();
-
+                Intent close = new Intent("finish_activity");
+                sendBroadcast(close);
 
                 Intent intent = new Intent(getBaseContext(), FilterChooser.class);
                 intent.putExtra("imageUri", file.toURI().toString());

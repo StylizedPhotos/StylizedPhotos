@@ -1,6 +1,9 @@
 package com.stylizedphotos.stylizedphotos;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -29,8 +32,8 @@ public class FilterChooser extends AppCompatActivity
 {
     //int number_of_filters=8;// a constant that change when the user add an external filter
     //private ImageButton mImageButton;
-    ArrayList<String> filters_names = new ArrayList<String>();
-    ArrayList<Button> Buttons = new ArrayList<Button>();
+    ArrayList<String> filters_names = new ArrayList<>();
+    ArrayList<Button> Buttons = new ArrayList<>();
     ImageView image;
     Bitmap bitmap;
     String mCurrentPhotoPath;
@@ -41,7 +44,18 @@ public class FilterChooser extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter_chooser);
 
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 
+            @Override
+            public void onReceive(Context arg0, Intent intent) {
+                String action = intent.getAction();
+                if (action.equals("finish_activity")) {
+                    finish();
+                    // DO WHATEVER YOU WANT.
+                }
+            }
+        };
+        registerReceiver(broadcastReceiver, new IntentFilter("finish_activity"));
 
         filters_names.add("Mean blur");
         filters_names.add("Gaussian blur");
@@ -82,7 +96,6 @@ public class FilterChooser extends AppCompatActivity
                     intent.putExtra("imageUri", imageUri.toString());
                     intent.putExtra("opcode", opcode);
                     startActivityForResult(intent, RESULT_OPEN_FILTER_SCREEN);
-                    finish();
                 }
             });
         }

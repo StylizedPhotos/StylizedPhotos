@@ -106,6 +106,7 @@ public class MainScreen extends AppCompatActivity
 
             Intent intent = new Intent(this, FilterChooser.class); //creating the intent to switch to the FilterChooser activity
             intent.putExtra("imageUri", uri.toString());  //add the image to the intent
+            intent.putExtra("shareUri", "");
             startActivityForResult(intent, RESULT_LOAD_IMAGE);  //starting the intent
         }
 

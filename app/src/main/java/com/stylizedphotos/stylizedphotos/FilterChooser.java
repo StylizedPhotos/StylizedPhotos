@@ -103,15 +103,8 @@ public class FilterChooser extends AppCompatActivity
                             + File.separator +shareUri.toString();
 
                     File imageFileToShare = new File(imagePath);
-
-                    File photoFile = null;
-                    try {
-                        photoFile = createImageFile();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                     Uri photoUri = FileProvider.getUriForFile(FilterChooser.this,
-                            "com.stylizedphotos.stylizedphotos.provider", photoFile);
+                            "com.stylizedphotos.stylizedphotos.provider", imageFileToShare);
                     share.putExtra(Intent.EXTRA_STREAM, photoUri);
 
                     startActivity(Intent.createChooser(share, "Share Image!"));

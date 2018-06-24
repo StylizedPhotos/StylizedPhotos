@@ -25,6 +25,8 @@ public class FilterChooser extends AppCompatActivity
     //private ImageButton mImageButton;
     ArrayList<String> filters_names = new ArrayList<String>();
     ArrayList<Button> Buttons = new ArrayList<Button>();
+    ImageView image;
+    Bitmap bitmap;
     private static final int RESULT_OPEN_FILTER_SCREEN = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +45,13 @@ public class FilterChooser extends AppCompatActivity
         filters_names.add("Color Highlight");
         Bundle extras = getIntent().getExtras();
         final Uri imageUri = Uri.parse(extras.getString("imageUri"));
-        Bitmap bitmap = null;  //convert the uri to a bitmap
+        bitmap = null;  //convert the uri to a bitmap
         try {
             bitmap = getBitmapFromUri(imageUri);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ImageView image = (ImageView) findViewById(R.id.imageViewFilter);
+        image = (ImageView) findViewById(R.id.imageViewFilter);
         image.setImageBitmap(bitmap);
         for(int i=0;i<filters_names.size();i++) {
             final int opcode = i;
@@ -126,4 +128,10 @@ public class FilterChooser extends AppCompatActivity
         return image;
     }
 
+    public void RefreshImage (Bitmap bitmap)
+    {
+        image = (ImageView) findViewById(R.id.imageViewFilter);
+        image.setImageBitmap(bitmap);
+        this.bitmap = bitmap;
+    }
 }

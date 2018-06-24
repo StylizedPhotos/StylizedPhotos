@@ -31,6 +31,7 @@ public class FilterScreen extends AppCompatActivity {
     public ImageView image_view;
     Bitmap orig_image;
     final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
+    final int RESULT_RETU_RETURN_TO_FILTER_CHOOSER = 2;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter_screen);
@@ -172,6 +173,9 @@ public class FilterScreen extends AppCompatActivity {
                 image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                 stream.flush();
                 stream.close();
+                Intent intent = new Intent(getBaseContext(), FilterChooser.class);
+                intent.putExtra("imageUri", file.toURI().toString());
+                startActivityForResult(intent, RESULT_RETU_RETURN_TO_FILTER_CHOOSER);
             } catch (IOException e) // Catch the exception
             {
                 e.printStackTrace();

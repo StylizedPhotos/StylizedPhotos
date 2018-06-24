@@ -1,24 +1,36 @@
 package com.stylizedphotos.stylizedphotos;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 
+import java.io.File;
 import java.io.FileDescriptor;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class FilterScreen extends AppCompatActivity {
     public ImageView image_view;
-
+    Bitmap orig_image;
+    final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter_screen);
@@ -30,11 +42,23 @@ public class FilterScreen extends AppCompatActivity {
         Bitmap bitmap = null;  //convert the uri to a bitmap
         try {
             bitmap = getBitmapFromUri(imageUri);
+            orig_image = bitmap;
         } catch (IOException e) {
             e.printStackTrace();
         }
         RefreshImage(bitmap);
-
+        Button save = (Button)findViewById(R.id.saveButton);
+        save.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                SaveImage();
+            }
+        });
+        Button reset = (Button)findViewById(R.id.resetButton);
+        reset.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                ResetImage();
+            }
+        });
        /* Intent intent = new Intent(this, FilterDemo.class);  //creating the intent to switch to the FilterChooser activity
         startActivity(intent);  //starting the intent*/
         switch (opcode){
@@ -124,5 +148,39 @@ public class FilterScreen extends AppCompatActivity {
     {
         image_view = (ImageView) findViewById(R.id.imageViewFilter);
         image_view.setImageBitmap(bitmap);
+    }
+
+    public void SaveImage()
+    {
+        //File file;
+        //String path = Environment.getExternalStorageDirectory().toString()+"StylizedPhotos";
+        //file = new File(path, "image"+".jpg");
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+        }
+        else {
+            File file = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES), "StylizedPhotos.jpg");
+            try {
+                OutputStream stream = null;
+                stream = new FileOutputStream(file);
+                Bitmap image = ((BitmapDrawable) image_view.getDrawable()).getBitmap();
+                image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                stream.flush();
+                stream.close();
+            } catch (IOException e) // Catch the exception
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void ResetImage()
+    {
+        image_view.setImageBitmap(orig_image);
     }
 }

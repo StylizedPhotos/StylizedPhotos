@@ -42,4 +42,12 @@
         </LinearLayout>
     </HorizontalScrollView>
 
+    <ImageButton
+        android:id="@+id/sharebutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/ic_menu_share"
+        tools:layout_editor_absoluteX="287dp"
+        tools:layout_editor_absoluteY="16dp" />
+
 </android.support.constraint.ConstraintLayout>

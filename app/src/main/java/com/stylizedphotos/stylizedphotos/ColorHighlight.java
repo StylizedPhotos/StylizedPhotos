@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
@@ -15,10 +17,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-public class DominantColorRemoval {
+public class ColorHighlight {
     public ArrayList<SeekBar> slider_array = new ArrayList<SeekBar>();
     public ArrayList<TextView> names = new ArrayList<TextView>();
-    ImageView huescale;
     RenderScript rs;
     FilterScreen filterScreenContext = null;
     Context context = null;
@@ -31,7 +32,7 @@ public class DominantColorRemoval {
 
 
 
-    public DominantColorRemoval (final Bitmap bitmap, final FilterScreen filterScreen){
+    public ColorHighlight (final Bitmap bitmap, final FilterScreen filterScreen){
         filterScreenContext = filterScreen;
         rs = RenderScript.create(filterScreen);
         floatArrayOrigin = new float[bitmap.getWidth()*bitmap.getHeight()][3];// 1d array of ints to get image
@@ -50,10 +51,11 @@ public class DominantColorRemoval {
         hue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                DominantColorRemoval.MyTaskParams params = new DominantColorRemoval.MyTaskParams(bitmap);
+                ColorHighlight.MyTaskParams params = new ColorHighlight.MyTaskParams(bitmap);
                 seek_hue = seekBar.getProgress();
                 params.setHue(seek_hue);
-                new DominantColorRemoval.Background().execute(params);
+                params.setRange(seek_range);
+                new ColorHighlight.Background().execute(params);
             }
 
             @Override
@@ -70,19 +72,20 @@ public class DominantColorRemoval {
         n1.setText("Hue");
         names.add(n1);
         slider_array.add(hue);
-        huescale = new ImageView(filterScreen);
-        huescale.setImageBitmap(BitmapFactory.decodeResource(filterScreen.getResources(), R.drawable.hue));
-        SeekBar saturation = new SeekBar(filterScreen);
-        saturation.setMax(41);
-        saturation.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        Bitmap hueScale = BitmapFactory.decodeResource(filterScreen.getResources(), R.drawable.hue);
+        Drawable d = new BitmapDrawable(filterScreen.getResources(), hueScale);
+        hue.setBackground(d);
+        SeekBar range = new SeekBar(filterScreen);
+        range.setMax(41);
+        range.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 // TODO Auto-generated method stub
-                DominantColorRemoval.MyTaskParams params = new DominantColorRemoval.MyTaskParams(bitmap);
+                ColorHighlight.MyTaskParams params = new ColorHighlight.MyTaskParams(bitmap);
                 seek_range = seekBar.getProgress();
                 params.setHue(seek_hue);
                 params.setRange(seek_range);
-                new DominantColorRemoval.Background().execute(params);
+                new ColorHighlight.Background().execute(params);
             }
 
             @Override
@@ -92,15 +95,18 @@ public class DominantColorRemoval {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                            }
+                // MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
+                // new Background().execute(params);
+                //filterScreen.RefreshImage(FilterFunction(bitmap));
+            }
         });
         TextView n2 = new TextView(filterScreen);
         n2.setText("Range");
         names.add(n2);
-        slider_array.add(saturation);
+        slider_array.add(range);
     }
 
-    public DominantColorRemoval(Context context){
+    public ColorHighlight(Context context){
         this.context = context;
     }
 
@@ -108,10 +114,10 @@ public class DominantColorRemoval {
         filterScreenContext.RefreshImage(bitmap);
     }
 
-    class Background extends AsyncTask<DominantColorRemoval.MyTaskParams, Void, Bitmap> {
+    class Background extends AsyncTask<ColorHighlight.MyTaskParams, Void, Bitmap> {
         @Override
-        protected Bitmap doInBackground(DominantColorRemoval.MyTaskParams... params) {
-            ScriptC_DominantColorRemoval parallel_script = new ScriptC_DominantColorRemoval(rs);
+        protected Bitmap doInBackground(ColorHighlight.MyTaskParams... params) {
+            ScriptC_ColorHighlight parallel_script = new ScriptC_ColorHighlight(rs);
             Bitmap loc_bitmap = params[0].bitmap.copy(params[0].bitmap.getConfig(), true);
             Allocation inalloc = Allocation.createFromBitmap(rs, params[0].bitmap, Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
             Allocation outalloc = Allocation.createFromBitmap(rs, loc_bitmap, Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
@@ -131,6 +137,7 @@ public class DominantColorRemoval {
                 floatArrayOut[i][1]=float1dArrayout[j+1];
                 floatArrayOut[i][2]=float1dArrayout[j+2];
             }
+
             loc_bitmap = toRGB(floatArrayOut,loc_bitmap.getWidth(),loc_bitmap.getHeight());
             return loc_bitmap;
         }

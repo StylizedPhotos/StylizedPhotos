@@ -124,6 +124,7 @@ public class MainScreen extends AppCompatActivity
             byte[] byteArray = stream.toByteArray();    //convert the stream to byte array*/
             Intent intent = new Intent(this, FilterChooser.class);  //creating the intent to switch to the FilterChooser activity
             intent.putExtra("imageUri", photoUri.toString());  //add the image to the intent
+            intent.putExtra("shareUri", "");
             startActivityForResult(intent, RESULT_LOAD_IMAGE);  //starting the intent
         }
     }

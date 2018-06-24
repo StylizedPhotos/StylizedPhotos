@@ -2,6 +2,7 @@ package com.stylizedphotos.stylizedphotos;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -28,10 +30,12 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class FilterScreen extends AppCompatActivity {
+
+    boolean permission_flag=false;
     public ImageView image_view;
     Bitmap orig_image;
     final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
-    final int RESULT_RETU_RETURN_TO_FILTER_CHOOSER = 2;
+    final int RESULT_RETURN_TO_FILTER_CHOOSER = 2;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter_screen);
@@ -39,7 +43,6 @@ public class FilterScreen extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         int opcode = extras.getInt("opcode");
         final Uri imageUri = Uri.parse(extras.getString("imageUri"));
-
         Bitmap bitmap = null;  //convert the uri to a bitmap
         try {
             bitmap = getBitmapFromUri(imageUri);
@@ -112,24 +115,22 @@ public class FilterScreen extends AppCompatActivity {
                 }
                 break;
             case 6: {
-                DominantColorRemoval DominantColorRemoval = new DominantColorRemoval(bitmap, this);
+                ColorRemoval ColorRemoval = new ColorRemoval(bitmap, this);
                 LinearLayout hue = (LinearLayout) findViewById(R.id.linearLayoutSeek);
-                hue.addView(DominantColorRemoval.huescale);
-                for (int i = 0; i < DominantColorRemoval.slider_array.size(); i++) {
+                for (int i = 0; i < ColorRemoval.slider_array.size(); i++) {
                     LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
-                    linearLayout.addView(DominantColorRemoval.names.get(i));
-                    linearLayout.addView(DominantColorRemoval.slider_array.get(i));
+                    linearLayout.addView(ColorRemoval.names.get(i));
+                    linearLayout.addView(ColorRemoval.slider_array.get(i));
                 }
             }
-                break;
+            break;
             case 7:
-                DominantColorHighlight DominantColorHighlight = new DominantColorHighlight(bitmap, this);
+                ColorHighlight ColorHighlight = new ColorHighlight(bitmap, this);
                 LinearLayout hue = (LinearLayout) findViewById(R.id.linearLayoutSeek);
-                hue.addView(DominantColorHighlight.huescale);
-                for (int i = 0; i < DominantColorHighlight.slider_array.size(); i++) {
+                for (int i = 0; i < ColorHighlight.slider_array.size(); i++) {
                     LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutSeek);
-                    linearLayout.addView(DominantColorHighlight.names.get(i));
-                    linearLayout.addView(DominantColorHighlight.slider_array.get(i));
+                    linearLayout.addView(ColorHighlight.names.get(i));
+                    linearLayout.addView(ColorHighlight.slider_array.get(i));
                 }
                 break;
         }
@@ -153,33 +154,74 @@ public class FilterScreen extends AppCompatActivity {
 
     public void SaveImage()
     {
-        //File file;
-        //String path = Environment.getExternalStorageDirectory().toString()+"StylizedPhotos";
-        //file = new File(path, "image"+".jpg");
-
+        File file;
+        String myPath = "";
+        SharedPreferences pref = getSharedPreferences("save data", MODE_PRIVATE);
+        SharedPreferences.Editor editor = getSharedPreferences("save data", MODE_PRIVATE).edit();
+        int counter = pref.getInt("counter",0);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+                != PackageManager.PERMISSION_GRANTED)//if no permission
+        {
             // Permission is not granted
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
         }
-        else {
-            File file = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_PICTURES), "StylizedPhotos.jpg");
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED)//if no permission
+        {
+
+
+
+
+            File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) +
+                    File.separator + "Stylized Photos");
+            boolean success = true;
+            if (!folder.exists()) {
+                success = folder.mkdir();
+            }
+
+            if(success==true)
+            {file = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES), "Stylized Photos"+ File.separator +"StylizedPhotos_" + counter + ".png");
+            myPath = "Stylized Photos"+ File.separator +"StylizedPhotos_" + counter + ".png";
+            }
+            else
+            {
+                file = new File(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES), "StylizedPhotos_" + counter + ".png");
+                myPath = "Stylized Photos"+ File.separator +"StylizedPhotos_" + counter + ".png";
+            }
             try {
                 OutputStream stream = null;
                 stream = new FileOutputStream(file);
                 Bitmap image = ((BitmapDrawable) image_view.getDrawable()).getBitmap();
-                image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                image.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 stream.flush();
                 stream.close();
+                editor.putInt("counter", ++counter);
+                editor.apply();
+
+
                 Intent intent = new Intent(getBaseContext(), FilterChooser.class);
                 intent.putExtra("imageUri", file.toURI().toString());
-                startActivityForResult(intent, RESULT_RETU_RETURN_TO_FILTER_CHOOSER);
-            } catch (IOException e) // Catch the exception
+                intent.putExtra("shareUri", myPath);
+                startActivityForResult(intent, RESULT_RETURN_TO_FILTER_CHOOSER);
+                finish();
+                Toast.makeText(getApplicationContext(), "Image Saved!",
+                        Toast.LENGTH_LONG).show();
+                }
+            catch (IOException e) // Catch the exception
             {
                 e.printStackTrace();
+                Toast.makeText(getApplicationContext(), "Image Cannot be Saved!",
+                        Toast.LENGTH_LONG).show();
             }
+
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "Can't Save - No permissions!",
+                    Toast.LENGTH_LONG).show();
         }
     }
 

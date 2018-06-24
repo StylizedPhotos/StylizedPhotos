@@ -3,7 +3,10 @@ package com.stylizedphotos.stylizedphotos;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v8.renderscript.Element;
 import android.widget.SeekBar;
@@ -29,6 +32,7 @@ public class HSV {
     private float [] float1dArrayout;
 
     public HSV (final Bitmap bitmap, final FilterScreen filterScreen){
+        Bitmap hueScale = null;
         filterScreenContext = filterScreen;
         rs = RenderScript.create(filterScreen);
         floatArrayOrigin = new float[bitmap.getWidth()*bitmap.getHeight()][3];// 1d array of ints to get image
@@ -44,6 +48,9 @@ public class HSV {
         }
         SeekBar hue= new SeekBar(filterScreen);
         hue.setMax(359);
+        hueScale = BitmapFactory.decodeResource(filterScreen.getResources(), R.drawable.hue);
+        Drawable d = new BitmapDrawable(filterScreen.getResources(), hueScale);
+        hue.setBackground(d);
         hue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {

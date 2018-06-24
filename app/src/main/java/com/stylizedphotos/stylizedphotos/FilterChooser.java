@@ -7,17 +7,23 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class FilterChooser extends AppCompatActivity
 {
@@ -27,6 +33,8 @@ public class FilterChooser extends AppCompatActivity
     ArrayList<Button> Buttons = new ArrayList<Button>();
     ImageView image;
     Bitmap bitmap;
+    String mCurrentPhotoPath;
+
     private static final int RESULT_OPEN_FILTER_SCREEN = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +53,7 @@ public class FilterChooser extends AppCompatActivity
         filters_names.add("Color Highlight");
         Bundle extras = getIntent().getExtras();
         final Uri imageUri = Uri.parse(extras.getString("imageUri"));
+        final Uri shareUri = Uri.parse(extras.getString("shareUri"));
         bitmap = null;  //convert the uri to a bitmap
         try {
             bitmap = getBitmapFromUri(imageUri);
@@ -73,9 +82,45 @@ public class FilterChooser extends AppCompatActivity
                     intent.putExtra("imageUri", imageUri.toString());
                     intent.putExtra("opcode", opcode);
                     startActivityForResult(intent, RESULT_OPEN_FILTER_SCREEN);
+                    finish();
                 }
             });
         }
+        ImageButton share = (ImageButton)findViewById(R.id.sharebutton);
+        share.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if(shareUri.toString().equals("") == false) {
+
+                    Intent share = new Intent(Intent.ACTION_SEND);
+
+                    // If you want to share a png image only, you can do:
+                    // setType("image/png"); OR for jpeg: setType("image/jpeg");
+                    share.setType("image/png");
+
+                    // Make sure you put example png image named myImage.png in your
+                    // directory
+                    String imagePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                            + File.separator +shareUri.toString();
+
+                    File imageFileToShare = new File(imagePath);
+
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Uri photoUri = FileProvider.getUriForFile(FilterChooser.this,
+                            "com.stylizedphotos.stylizedphotos.provider", photoFile);
+                    share.putExtra(Intent.EXTRA_STREAM, photoUri);
+
+                    startActivity(Intent.createChooser(share, "Share Image!"));
+                }
+                else
+                    Toast.makeText(getApplicationContext(), "Default Image wasn't changed",
+                            Toast.LENGTH_LONG).show();
+            }
+        });
         Bitmap preview = bitmap.createScaledBitmap(bitmap, 200,200,true);
         Bitmap temp_preview = preview;
         temp_preview = MeanBlur.Preview(preview);
@@ -104,12 +149,12 @@ public class FilterChooser extends AppCompatActivity
         d = new BitmapDrawable(getResources(), temp_preview);
         Buttons.get(5).setBackground(d);
 
-        DominantColorRemoval remove = new DominantColorRemoval(this);
+        ColorRemoval remove = new ColorRemoval(this);
         temp_preview = remove.Preview(preview);
         d = new BitmapDrawable(getResources(), temp_preview);
         Buttons.get(6).setBackground(d);
 
-        DominantColorHighlight highlight = new DominantColorHighlight(this);
+        ColorHighlight highlight = new ColorHighlight(this);
         temp_preview = highlight.Preview(preview);
         d = new BitmapDrawable(getResources(), temp_preview);
         Buttons.get(7).setBackground(d);
@@ -133,5 +178,22 @@ public class FilterChooser extends AppCompatActivity
         image = (ImageView) findViewById(R.id.imageViewFilter);
         image.setImageBitmap(bitmap);
         this.bitmap = bitmap;
+    }
+
+    private File createImageFile() throws IOException
+    {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 }

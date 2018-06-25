@@ -28,7 +28,7 @@ public class External3x3 extends AppCompatActivity {
                 float[][] arr = new float[3][3];
                 float myNum = 0; // for conversion from string in the text view
                 EditText edit_name = (EditText)findViewById(R.id.filtername);
-                String name = edit_name.toString();
+                String name = edit_name.getText().toString();
                 TableLayout table = (TableLayout)findViewById(R.id.tableLayout);
                 TableRow row1 = (TableRow)findViewById(R.id.row1);
                 TableRow row2 = (TableRow)findViewById(R.id.row2);
@@ -55,16 +55,17 @@ public class External3x3 extends AppCompatActivity {
                 }
                 final Filter filter = new Filter(arr, name,getBaseContext());
 
-                Intent intent =new Intent();
-                intent.setAction("check_values");
+                Intent intent = new Intent("check_values");
                 intent.putExtra("filter",filter);
                 sendBroadcast(intent);
                 Intent close = new Intent("finish_activity");
+                close.putExtra("filter",filter);
                 sendBroadcast(close);
-                intent = new Intent(getBaseContext(), FilterChooser.class);
-                intent.putExtra("imageUri", imageUri.toString());
-                intent.putExtra("shareUri", "");
-                startActivity(intent);
+
+                Intent intent2 = new Intent(getBaseContext(), FilterChooser.class);
+                intent2.putExtra("imageUri", imageUri.toString());
+                intent2.putExtra("shareUri", "");
+                startActivity(intent2);
                 finish();
             }
         });

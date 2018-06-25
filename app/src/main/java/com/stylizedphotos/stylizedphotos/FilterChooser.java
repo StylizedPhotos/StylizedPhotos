@@ -21,9 +21,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -63,6 +68,7 @@ public class FilterChooser extends AppCompatActivity
             }
         };
         registerReceiver(broadcastReceiver, new IntentFilter("finish_activity"));
+        registerReceiver(broadcastReceiver, new IntentFilter("check_values"));
 
         filters_names.add("Mean blur");
         filters_names.add("Gaussian blur");
@@ -108,31 +114,67 @@ public class FilterChooser extends AppCompatActivity
             });
         }
 
-        for(int i=0;i<external_filters.size();i++) {
-            final int j = i;
-            LinearLayout filters = (LinearLayout) findViewById(R.id.filter_layout);
-            Button but = new Button(this);
-            // ImageButton but = new ImageButton(this);
+//        File folder = new File(this.getFilesDir(), "External Filters");
+//        if(folder.exists())
+     {
+            File file_filters [] = this.getFilesDir().listFiles();
+            for(int i=0;i<file_filters.length;i++) {
+                LinearLayout filters = (LinearLayout) findViewById(R.id.filter_layout);
+                Button but = new Button(this);
+                // ImageButton but = new ImageButton(this);
 
 
-            but.setLayoutParams(new LinearLayout.LayoutParams(400, LinearLayout.LayoutParams.MATCH_PARENT));
-            but.setText(external_filters.get(i).getName());
+                but.setLayoutParams(new LinearLayout.LayoutParams(400, LinearLayout.LayoutParams.MATCH_PARENT));
+                but.setText(file_filters[i].getName());
 
-            // preview.setDensity(1000);
-            but.setId(i);
-            Buttons.add(but);
-            filters.addView(but);
-
-            but.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    Intent intent = new Intent(getBaseContext(), ExternalFilterScreen.class);
-                    intent.putExtra("imageUri", imageUri.toString());
-                    intent.putExtra("opcode", external_filters.get(j).getOp_code());
-                    intent.putExtra("matrix", external_filters.get(j).getKernel());
-                    startActivityForResult(intent, RESULT_OPEN_FILTER_SCREEN);
+                // preview.setDensity(1000);
+                but.setId(i+filters_names.size());
+                Buttons.add(but);
+                filters.addView(but);
+                StringBuilder text = new StringBuilder();
+                String temp_line="";
+                try {
+                    File file = file_filters[i];
+                    BufferedReader br = new BufferedReader(new FileReader(file));
+                    String line="";
+                    if ((line = br.readLine()) != null)
+                       temp_line += line;
+                    text.append(temp_line);
+                   /* while ((line = br.readLine()) != null) {
+                        text.append(line);
+                    }*/
+                    br.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            });
+                String input = text.toString();
+                final String[] external_filter_data = input.split(";");
+                //[0]=name [1]=size [2]= op [3]=ker
+                String[] kernel_values = external_filter_data[3].split(",");
+                int size;
+                size = Integer.parseInt(external_filter_data[1]);
+                float [][] kernel = new float[size][size];
+
+                for(int k=0;k<size;k++)
+                    for(int j=0;j<size;j++)
+                        kernel[k][j] = Float.parseFloat(kernel_values[k*size+j]);//get from 1d string array to 2d float
+                final Matrix ker_mat = new Matrix(size,size,kernel);
+
+                but.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getBaseContext(), ExternalFilterScreen.class);
+                        intent.putExtra("imageUri", imageUri.toString());
+                        intent.putExtra("opcode", Integer.parseInt(external_filter_data[2]));
+                        intent.putExtra("matrix", ker_mat);
+                        startActivityForResult(intent, RESULT_OPEN_FILTER_SCREEN);
+                    }
+                });
+            }
         }
+
+
 
         ImageButton share = (ImageButton)findViewById(R.id.sharebutton);
         share.setOnClickListener(new View.OnClickListener() {
@@ -248,7 +290,73 @@ public class FilterChooser extends AppCompatActivity
 
     public void AddExternalFilter(final Filter filter)
     {
-        external_filters.add(filter);
+        //filter file: "filter name";"size";"index for array list (op code)";"matrix eg: 1,1,1,1,1,1,1,1,1 for 3x3"
+        String external_filter_data="",temp;
+        int size = filter.getKernel().getCols();//nxn so 1 size is enough
+
+        external_filter_data += filter.getName() + ";" + size + ";" + filter.getOp_code() + ";";
+        for(int i=0;i<size;i++)
+        {
+            for(int j=0;j<size;j++)
+            {
+                if(i==0 && j==0)
+                {
+                    temp = Float.toString(filter.getKernel().getVal(i,j));
+                    external_filter_data +=temp;
+                }
+                else
+                    external_filter_data +="," + filter.getKernel().getVal(i,j);
+            }
+        }
+        external_filter_data+='\n';
+        //here we have full data string of the filter
+
+//        File folder = new File(this.getFilesDir(), "External Filters");
+//        if(!folder.exists())
+//        {
+//            folder.mkdirs();
+//        }
+        //folder created
+
+        File filter_text = new File(this.getFilesDir(), filter.getName());//new file type with the name of the filter(not on disk)
+        if(!filter_text.exists()) {
+            try
+            {
+                filter_text.createNewFile();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Error saving filter", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+
+
+
+
+        //String filename = "myfile";
+       // String fileContents = "Hello world!";
+        FileOutputStream outputStream;
+
+//        try (PrintWriter p = new PrintWriter(new FileOutputStream(this.getFilesDir()+filter.getName()+".txt", true))) {
+//            p.println(external_filter_data);
+//        } catch (FileNotFoundException e1) {
+//            e1.printStackTrace();
+//        }
+        try {
+            outputStream = openFileOutput(filter.getName(), Context.MODE_PRIVATE);
+            outputStream.write(external_filter_data.getBytes());
+            outputStream.close();
+            Toast.makeText(this, "Filter was successfully created", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error: Filter cannot be created", Toast.LENGTH_SHORT).show();
+        }
+
+
+
+
+        //external_filters.add(filter);
         /*LinearLayout filters = (LinearLayout) findViewById(R.id.filter_layout);
         Button but = new Button(this);
         // ImageButton but = new ImageButton(this);

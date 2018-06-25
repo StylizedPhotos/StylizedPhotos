@@ -7,8 +7,10 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 
+import java.io.Serializable;
 
-public class Matrix {
+
+public class Matrix implements Serializable {
 
     private int rows;
     private int cols;

@@ -41,7 +41,8 @@
         <activity android:name=".External7x7" />
         <activity android:name=".External9x9" />
         <activity android:name=".External11x11" />
-        <activity android:name=".External13x13"></activity>
+        <activity android:name=".External13x13" />
+        <activity android:name=".ExternalFilterScreen"></activity>
     </application>
 
 </manifest>

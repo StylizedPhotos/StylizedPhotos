@@ -9,7 +9,7 @@
     <TableLayout
         android:id="@+id/tableLayout"
         android:layout_width="344dp"
-        android:layout_height="551dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -17,7 +17,6 @@
         android:stretchColumns="*"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
@@ -27,33 +26,29 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/textView0"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/editText14"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:ems="10"
                 android:gravity="center"
-                android:padding="28dp"
-                android:text="TextView"
-                tools:text="0" />
+                android:inputType="number" />
 
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/editText13"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:ems="10"
                 android:gravity="center"
-                android:padding="28dp"
-                android:text="TextView"
-                tools:text="0" />
+                android:inputType="number" />
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/editText12"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:ems="10"
                 android:gravity="center"
-                android:padding="28dp"
-                android:text="TextView"
-                tools:text="0" />
-
+                android:inputType="number" />
         </TableRow>
 
         <TableRow
@@ -61,32 +56,29 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="54dp"
+            <EditText
+                android:id="@+id/editText17"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:ems="10"
                 android:gravity="center"
-                android:padding="28dp"
-                android:text="TextView"
-                tools:text="0" />
+                android:inputType="number" />
 
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/editText16"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:ems="10"
                 android:gravity="center"
-                android:padding="28dp"
-                android:text="TextView"
-                tools:text="0" />
+                android:inputType="number" />
 
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/editText15"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:ems="10"
                 android:gravity="center"
-                android:padding="28dp"
-                android:text="TextView"
-                tools:text="0" />
+                android:inputType="number" />
         </TableRow>
 
         <TableRow
@@ -94,32 +86,29 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/textView6"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/editText20"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:ems="10"
                 android:gravity="center"
-                android:padding="28dp"
-                android:text="TextView"
-                tools:text="0" />
+                android:inputType="number" />
 
-            <TextView
-                android:id="@+id/textView7"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/editText19"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:ems="10"
                 android:gravity="center"
-                android:padding="28dp"
-                android:text="TextView"
-                tools:text="0" />
+                android:inputType="number" />
 
-            <TextView
-                android:id="@+id/textView8"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/editText18"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:ems="10"
                 android:gravity="center"
-                android:padding="28dp"
-                android:text="TextView"
-                tools:text="0" />
+                android:inputType="number" />
         </TableRow>
 
     </TableLayout>
@@ -131,14 +120,14 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:text="Reset"
-        app:layout_constraintBottom_toBottomOf="@+id/tableLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tableLayout" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="140dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         app:layout_constraintBottom_toTopOf="@+id/reset"
@@ -153,32 +142,20 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:text="Add filter"
-        app:layout_constraintBottom_toBottomOf="@+id/tableLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/tableLayout" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Enter filter name"
-        app:layout_constraintBottom_toTopOf="@+id/preview"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.482"
-        app:layout_constraintStart_toStartOf="@+id/tableLayout"
-        app:layout_constraintTop_toBottomOf="@+id/divider" />
 
     <Button
         android:id="@+id/preview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:text="Preview"
         app:layout_constraintBottom_toTopOf="@+id/imageView"
-        tools:layout_editor_absoluteX="136dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <View
         android:id="@+id/divider"
@@ -187,4 +164,20 @@
         android:background="?android:attr/listDivider"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="246dp" />
+
+    <EditText
+        android:id="@+id/filtername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Filter name"
+        app:layout_constraintBottom_toTopOf="@+id/preview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
 </android.support.constraint.ConstraintLayout>

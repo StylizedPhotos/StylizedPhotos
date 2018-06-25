@@ -24,6 +24,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,10 +35,11 @@ public class FilterChooser extends AppCompatActivity
     //private ImageButton mImageButton;
     ArrayList<String> filters_names = new ArrayList<>();
     ArrayList<Button> Buttons = new ArrayList<>();
+    ArrayList<Filter> external_filters = new ArrayList<>();
     ImageView image;
     Bitmap bitmap;
     String mCurrentPhotoPath;
-
+    Uri imageUri = null;
     private static final int RESULT_OPEN_FILTER_SCREEN = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,11 @@ public class FilterChooser extends AppCompatActivity
                     finish();
                     // DO WHATEVER YOU WANT.
                 }
+                if(intent.getAction().equals("check_values"))
+                {
+                    Filter filter = (Filter)intent.getSerializableExtra("filter");
+                    AddExternalFilter(filter);
+                }
             }
         };
         registerReceiver(broadcastReceiver, new IntentFilter("finish_activity"));
@@ -66,7 +73,7 @@ public class FilterChooser extends AppCompatActivity
         filters_names.add("Color Removal");
         filters_names.add("Color Highlight");
         Bundle extras = getIntent().getExtras();
-        final Uri imageUri = Uri.parse(extras.getString("imageUri"));
+        imageUri = Uri.parse(extras.getString("imageUri"));
         final Uri shareUri = Uri.parse(extras.getString("shareUri"));
         bitmap = null;  //convert the uri to a bitmap
         try {
@@ -100,6 +107,33 @@ public class FilterChooser extends AppCompatActivity
                 }
             });
         }
+
+        for(int i=0;i<external_filters.size();i++) {
+            final int j = i;
+            LinearLayout filters = (LinearLayout) findViewById(R.id.filter_layout);
+            Button but = new Button(this);
+            // ImageButton but = new ImageButton(this);
+
+
+            but.setLayoutParams(new LinearLayout.LayoutParams(400, LinearLayout.LayoutParams.MATCH_PARENT));
+            but.setText(external_filters.get(i).getName());
+
+            // preview.setDensity(1000);
+            but.setId(i);
+            Buttons.add(but);
+            filters.addView(but);
+
+            but.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Intent intent = new Intent(getBaseContext(), ExternalFilterScreen.class);
+                    intent.putExtra("imageUri", imageUri.toString());
+                    intent.putExtra("opcode", external_filters.get(j).getOp_code());
+                    intent.putExtra("matrix", external_filters.get(j).getKernel());
+                    startActivityForResult(intent, RESULT_OPEN_FILTER_SCREEN);
+                }
+            });
+        }
+
         ImageButton share = (ImageButton)findViewById(R.id.sharebutton);
         share.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -126,6 +160,14 @@ public class FilterChooser extends AppCompatActivity
                 else
                     Toast.makeText(getApplicationContext(), "Default Image wasn't changed",
                             Toast.LENGTH_LONG).show();
+            }
+        });
+        Button addfilter = (Button)findViewById(R.id.add_external);
+        addfilter.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), ChooseExternalSize.class);
+                intent.putExtra("imageUri", imageUri.toString());
+                startActivity(intent);
             }
         });
         Bitmap preview = bitmap.createScaledBitmap(bitmap, 200,200,true);
@@ -202,5 +244,32 @@ public class FilterChooser extends AppCompatActivity
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
+    }
+
+    public void AddExternalFilter(final Filter filter)
+    {
+        external_filters.add(filter);
+        /*LinearLayout filters = (LinearLayout) findViewById(R.id.filter_layout);
+        Button but = new Button(this);
+        // ImageButton but = new ImageButton(this);
+
+
+        but.setLayoutParams(new LinearLayout.LayoutParams(400, LinearLayout.LayoutParams.MATCH_PARENT));
+        but.setText(filter.getName());
+
+        // preview.setDensity(1000);
+        but.setId(filter.getOp_code());
+        Buttons.add(but);
+        filters.addView(but);
+
+        but.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), ExternalFilterScreen.class);
+                intent.putExtra("imageUri", imageUri.toString());
+                intent.putExtra("opcode", filter.getOp_code());
+                intent.putExtra("matrix", filter.getKernel());
+                startActivityForResult(intent, RESULT_OPEN_FILTER_SCREEN);
+            }
+        });*/
     }
 }

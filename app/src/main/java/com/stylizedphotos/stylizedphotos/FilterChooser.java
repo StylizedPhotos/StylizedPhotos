@@ -90,6 +90,7 @@ public class FilterChooser extends AppCompatActivity
             but.setId(i);
             Buttons.add(but);
             filters.addView(but);
+
             but.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     Intent intent = new Intent(getBaseContext(), FilterScreen.class);

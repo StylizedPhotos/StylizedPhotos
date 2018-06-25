@@ -3,6 +3,7 @@
     package="com.stylizedphotos.stylizedphotos">
 
     <uses-sdk android:targetSdkVersion="23" />
+
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -34,6 +35,13 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <activity android:name=".ChooseExternalSize" />
+        <activity android:name=".External3x3" />
+        <activity android:name=".External5x5" />
+        <activity android:name=".External7x7" />
+        <activity android:name=".External9x9" />
+        <activity android:name=".External11x11" />
+        <activity android:name=".External13x13"></activity>
     </application>
 
 </manifest>

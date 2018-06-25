@@ -13,13 +13,11 @@ import java.util.ArrayList;
 public class MeanBlur {
     public ArrayList<SeekBar> slider_array = new ArrayList<SeekBar>();
     public ArrayList<TextView> names = new ArrayList<TextView>();
-    RenderScript rs;
     FilterScreen filterScreenContext;
     Bitmap tryMe ;
 
     MeanBlur(final Bitmap bitmap, final FilterScreen filterScreen) {
         filterScreenContext = filterScreen;
-        rs = RenderScript.create(filterScreen);
         SeekBar s1 = new SeekBar(filterScreen);
         s1.setMax(6);
         s1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

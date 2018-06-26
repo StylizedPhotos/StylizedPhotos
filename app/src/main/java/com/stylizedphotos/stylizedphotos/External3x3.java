@@ -36,7 +36,7 @@ public class External3x3 extends AppCompatActivity {
         final Uri imageUri = Uri.parse(extras.getString("imageUri"));
         bitmap = null;  //convert the uri to a bitmap
         try {
-            bitmap = getBitmapFromUri(imageUri);
+            bitmap = scaleBitmap(getBitmapFromUri(imageUri));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -48,12 +48,12 @@ public class External3x3 extends AppCompatActivity {
             public void onClick(View v) {
 
                 EditText temp;
-                float[][] arr = new float[3][3];
                 float myNum = 0; // for conversion from string in the text view
                 EditText edit_name = (EditText)findViewById(R.id.filtername);
                 String name = edit_name.getText().toString();
                 TableLayout table = (TableLayout)findViewById(R.id.tableLayout);
                 int num_of_rows =table.getChildCount();
+                float[][] arr = new float[num_of_rows][num_of_rows];
                 for(int i = 0; i < num_of_rows; i++)
                 {
                     View view = table.getChildAt(i);
@@ -110,6 +110,7 @@ public class External3x3 extends AppCompatActivity {
                         }
                     }
                 }
+                image.setImageBitmap(bitmap);
             }
         });
         final Button preivew = (Button)findViewById(R.id.preview);
@@ -118,10 +119,10 @@ public class External3x3 extends AppCompatActivity {
                 EditText temp;
                 EditText edit_name = (EditText)findViewById(R.id.filtername);
                 String name = edit_name.getText().toString();
-                float[][] arr = new float[3][3];
                 float myNum = 0;
                 TableLayout table = (TableLayout)findViewById(R.id.tableLayout);
                 int num_of_rows =table.getChildCount();
+                float[][] arr = new float[num_of_rows][num_of_rows];
                 for(int i = 0; i < num_of_rows; i++)
                 {
                     View view = table.getChildAt(i);
@@ -144,7 +145,7 @@ public class External3x3 extends AppCompatActivity {
                 CheckBox checkBox_div = (CheckBox)findViewById(R.id.devide);
                 boolean devide = checkBox_div.isChecked();
                 filter = new Filter(arr, name,getBaseContext(), devide);
-                //Bitmap preview = bitmap.createScaledBitmap(bitmap, 400,400,true);
+                //Bitmap preview = bitmap.createScaledBitmap(bitmap, 600,600,true);
                 Bitmap temp_preview;
                 temp_preview = Matrix.convolution(filter.getKernel(),bitmap,filter.isDevide());
                 Drawable d = new BitmapDrawable(getResources(), temp_preview);
@@ -160,5 +161,34 @@ public class External3x3 extends AppCompatActivity {
         Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
         parcelFileDescriptor.close();
         return image;
+    }
+
+    private Bitmap scaleBitmap(Bitmap bm) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        int maxWidth = 1500;
+        int maxHeight = 1200;
+        //Log.v("Pictures", "Width and height are " + width + "--" + height);
+
+        if (width > height) {
+            // landscape
+            float ratio = (float) width / maxWidth;
+            width = maxWidth;
+            height = (int)(height / ratio);
+        } else if (height > width) {
+            // portrait
+            float ratio = (float) height / maxHeight;
+            height = maxHeight;
+            width = (int)(width / ratio);
+        } else {
+            // square
+            height = maxHeight;
+            width = maxWidth;
+        }
+
+        //Log.v("Pictures", "after scaling Width and height are " + width + "--" + height);
+
+        bm = Bitmap.createScaledBitmap(bm, width, height, true);
+        return bm;
     }
 }

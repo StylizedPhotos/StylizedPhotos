@@ -162,7 +162,7 @@ public class FilterChooser extends AppCompatActivity
                         kernel[k][j] = Float.parseFloat(kernel_values[k*size+j]);//get from 1d string array to 2d float
                 final Matrix ker_mat = new Matrix(size,size,kernel);
 
-                Bitmap preview = bitmap.createScaledBitmap(bitmap, 200,200,true);
+                Bitmap preview = bitmap.createScaledBitmap(bitmap, 100,100,true);
                 Bitmap temp_preview = preview;
                 temp_preview = Matrix.convolution(ker_mat,preview,Boolean.parseBoolean(external_filter_data[4]));
                 Drawable d = new BitmapDrawable(getResources(), temp_preview);
@@ -219,7 +219,7 @@ public class FilterChooser extends AppCompatActivity
                 startActivity(intent);
             }
         });
-        Bitmap preview = bitmap.createScaledBitmap(bitmap, 200,200,true);
+        Bitmap preview = bitmap.createScaledBitmap(bitmap, 100,100,true);
         Bitmap temp_preview = preview;
         temp_preview = MeanBlur.Preview(preview);
         Drawable d = new BitmapDrawable(getResources(), temp_preview);

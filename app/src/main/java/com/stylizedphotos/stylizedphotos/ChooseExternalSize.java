@@ -57,30 +57,35 @@ public class ChooseExternalSize extends AppCompatActivity {
         size5.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), External5x5.class);
+                intent.putExtra("imageUri", imageUri.toString());
                 startActivityForResult(intent, RESULT_OPEN_5X5);
             }
         });
         size7.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), External7x7.class);
+                intent.putExtra("imageUri", imageUri.toString());
                 startActivityForResult(intent, RESULT_OPEN_7X7);
             }
         });
         size9.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), External9x9.class);
+                intent.putExtra("imageUri", imageUri.toString());
                 startActivityForResult(intent, RESULT_OPEN_9X9);
             }
         });
         size11.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), External11x11.class);
+                intent.putExtra("imageUri", imageUri.toString());
                 startActivityForResult(intent, RESULT_OPEN_11X11);
             }
         });
         size13.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), External13x13.class);
+                intent.putExtra("imageUri", imageUri.toString());
                 startActivityForResult(intent, RESULT_OPEN_13X13);
             }
         });

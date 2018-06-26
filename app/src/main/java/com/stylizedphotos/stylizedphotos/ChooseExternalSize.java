@@ -14,9 +14,7 @@ public class ChooseExternalSize extends AppCompatActivity {
     final int RESULT_OPEN_3X3 = 3;
     final int RESULT_OPEN_5X5 = 5;
     final int RESULT_OPEN_7X7 = 7;
-    final int RESULT_OPEN_9X9 = 9;
-    final int RESULT_OPEN_11X11 = 11;
-    final int RESULT_OPEN_13X13 = 13;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +40,7 @@ public class ChooseExternalSize extends AppCompatActivity {
         Button size3 = (Button)findViewById(R.id.size3);
         Button size5 = (Button)findViewById(R.id.size5);
         Button size7 = (Button)findViewById(R.id.size7);
-        Button size9 = (Button)findViewById(R.id.size9);
-        Button size11 = (Button)findViewById(R.id.size11);
-        Button size13 = (Button)findViewById(R.id.size13);
+
 
 
         size3.setOnClickListener(new View.OnClickListener() {
@@ -68,26 +64,6 @@ public class ChooseExternalSize extends AppCompatActivity {
                 startActivityForResult(intent, RESULT_OPEN_7X7);
             }
         });
-        size9.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), External9x9.class);
-                intent.putExtra("imageUri", imageUri.toString());
-                startActivityForResult(intent, RESULT_OPEN_9X9);
-            }
-        });
-        size11.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), External11x11.class);
-                intent.putExtra("imageUri", imageUri.toString());
-                startActivityForResult(intent, RESULT_OPEN_11X11);
-            }
-        });
-        size13.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), External13x13.class);
-                intent.putExtra("imageUri", imageUri.toString());
-                startActivityForResult(intent, RESULT_OPEN_13X13);
-            }
-        });
+
     }
 }

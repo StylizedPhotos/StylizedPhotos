@@ -11,13 +11,13 @@ import static android.content.Context.MODE_PRIVATE;
 public class Filter implements Serializable {
     private String name;
     private int op_code;
-
+    private boolean devide;
     private Matrix kernel;
 
-
-    public Filter(float[][] arr, String name, Context context)
+    public Filter(float[][] arr, String name, Context context, boolean devide)
     {
         this.name= name;
+        this.devide = devide;
         kernel = new Matrix(arr.length,arr.length,arr);//nxn
         SharedPreferences pref = context.getSharedPreferences("save data", MODE_PRIVATE);
         SharedPreferences.Editor editor = context.getSharedPreferences("save data", MODE_PRIVATE).edit();
@@ -37,6 +37,10 @@ public class Filter implements Serializable {
 
     public int getOp_code() {
         return op_code;
+    }
+
+    public boolean isDevide() {
+        return devide;
     }
 
     public void setName(String name) {

@@ -56,7 +56,7 @@ public class FilterChooser extends AppCompatActivity
             @Override
             public void onReceive(Context arg0, Intent intent) {
                 String action = intent.getAction();
-                if (action.equals("finish_activity")) {
+                if (action.equals("finish_activity_filterchooser")) {
                     finish();
                     // DO WHATEVER YOU WANT.
                 }
@@ -67,7 +67,7 @@ public class FilterChooser extends AppCompatActivity
                 }
             }
         };
-        registerReceiver(broadcastReceiver, new IntentFilter("finish_activity"));
+        registerReceiver(broadcastReceiver, new IntentFilter("finish_activity_filterchooser"));
         registerReceiver(broadcastReceiver, new IntentFilter("check_values"));
 
         filters_names.add("Mean blur");
@@ -151,7 +151,7 @@ public class FilterChooser extends AppCompatActivity
                 }
                 String input = text.toString();
                 final String[] external_filter_data = input.split(";");
-                //[0]=name [1]=size [2]= op [3]=ker
+                //[0]=name [1]=size [2]= op [3]=ker [4]=devide(true or false)
                 String[] kernel_values = external_filter_data[3].split(",");
                 int size;
                 size = Integer.parseInt(external_filter_data[1]);
@@ -162,12 +162,19 @@ public class FilterChooser extends AppCompatActivity
                         kernel[k][j] = Float.parseFloat(kernel_values[k*size+j]);//get from 1d string array to 2d float
                 final Matrix ker_mat = new Matrix(size,size,kernel);
 
+                Bitmap preview = bitmap.createScaledBitmap(bitmap, 200,200,true);
+                Bitmap temp_preview = preview;
+                temp_preview = Matrix.convolution(ker_mat,preview,Boolean.parseBoolean(external_filter_data[4]));
+                Drawable d = new BitmapDrawable(getResources(), temp_preview);
+                but.setBackground(d);
+
                 but.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         Intent intent = new Intent(getBaseContext(), ExternalFilterScreen.class);
                         intent.putExtra("imageUri", imageUri.toString());
                         intent.putExtra("opcode", Integer.parseInt(external_filter_data[2]));
                         intent.putExtra("matrix", ker_mat);
+                        intent.putExtra("devide", Boolean.parseBoolean(external_filter_data[4]));
                         startActivityForResult(intent, RESULT_OPEN_FILTER_SCREEN);
                     }
                 });
@@ -308,6 +315,7 @@ public class FilterChooser extends AppCompatActivity
                     external_filter_data +="," + filter.getKernel().getVal(i,j);
             }
         }
+        external_filter_data += ";" + filter.isDevide();
         external_filter_data+='\n';
         //here we have full data string of the filter
 

@@ -10,16 +10,13 @@
         android:id="@+id/tableLayout"
         android:layout_width="344dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:stretchColumns="*"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TableRow
             android:id="@+id/row1"
@@ -30,25 +27,31 @@
                 android:id="@+id/editText14"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number" />
+                android:inputType="number|numberSigned|numberDecimal"
+                android:text="0" />
 
             <EditText
                 android:id="@+id/editText13"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number" />
+                android:inputType="number|numberSigned|numberDecimal"
+                android:text="0" />
 
             <EditText
                 android:id="@+id/editText12"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number" />
+                android:inputType="number|numberSigned|numberDecimal"
+                android:text="0" />
         </TableRow>
 
         <TableRow
@@ -62,7 +65,8 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number" />
+                android:inputType="number|numberSigned|numberDecimal"
+                android:text="0" />
 
             <EditText
                 android:id="@+id/editText16"
@@ -70,7 +74,8 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number" />
+                android:inputType="number|numberSigned|numberDecimal"
+                android:text="0" />
 
             <EditText
                 android:id="@+id/editText15"
@@ -78,7 +83,8 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number" />
+                android:inputType="number|numberSigned|numberDecimal"
+                android:text="0" />
         </TableRow>
 
         <TableRow
@@ -92,7 +98,8 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number" />
+                android:inputType="number|numberSigned|numberDecimal"
+                android:text="0" />
 
             <EditText
                 android:id="@+id/editText19"
@@ -100,7 +107,8 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number" />
+                android:inputType="number|numberSigned|numberDecimal"
+                android:text="0" />
 
             <EditText
                 android:id="@+id/editText18"
@@ -108,7 +116,8 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number" />
+                android:inputType="number|numberSigned|numberDecimal"
+                android:text="0" />
         </TableRow>
 
     </TableLayout>
@@ -121,18 +130,22 @@
         android:layout_marginStart="8dp"
         android:text="Reset"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/tableLayout" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imagePreview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="140dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/reset"
+        android:layout_marginTop="8dp"
+        android:adjustViewBounds="false"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/preview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/filtername"
         app:srcCompat="@drawable/button" />
 
     <Button
@@ -143,7 +156,7 @@
         android:layout_marginEnd="8dp"
         android:text="Add filter"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/tableLayout" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/preview"
@@ -153,31 +166,31 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:text="Preview"
-        app:layout_constraintBottom_toTopOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="344dp"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="246dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/add"
+        app:layout_constraintStart_toEndOf="@+id/reset" />
 
     <EditText
         android:id="@+id/filtername"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_height="46dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="text"
         android:text="Filter name"
-        app:layout_constraintBottom_toTopOf="@+id/preview"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
+
+    <CheckBox
+        android:id="@+id/devide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Devide?"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/filtername"
         app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
 </android.support.constraint.ConstraintLayout>

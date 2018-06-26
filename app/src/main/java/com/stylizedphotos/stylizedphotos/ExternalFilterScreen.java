@@ -42,6 +42,7 @@ public class ExternalFilterScreen extends AppCompatActivity implements Serializa
         int opcode = extras.getInt("opcode");
         final Uri imageUri = Uri.parse(extras.getString("imageUri"));
         final Matrix kernel = (Matrix)extras.getSerializable("matrix");
+        final boolean devide = (boolean)extras.get("devide");
         Bitmap bitmap = null;  //convert the uri to a bitmap
         try {
             bitmap = getBitmapFromUri(imageUri);
@@ -62,7 +63,7 @@ public class ExternalFilterScreen extends AppCompatActivity implements Serializa
                 ResetImage();
             }
         });
-        RefreshImage(Matrix.convolution(kernel,bitmap,false));
+        RefreshImage(Matrix.convolution(kernel,bitmap,devide));
 
     }
 

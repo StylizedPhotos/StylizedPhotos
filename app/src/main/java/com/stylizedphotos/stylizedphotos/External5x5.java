@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -28,6 +29,7 @@ public class External5x5 extends AppCompatActivity {
     Bitmap bitmap;
     ImageView image;
     Filter filter;
+    boolean empty_flag= false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +48,7 @@ public class External5x5 extends AppCompatActivity {
         Button add = (Button)findViewById(R.id.add);
         add.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                empty_flag=false;
                 EditText temp;
                 float myNum = 0; // for conversion from string in the text view
                 EditText edit_name = (EditText)findViewById(R.id.filtername);
@@ -54,6 +56,7 @@ public class External5x5 extends AppCompatActivity {
                 TableLayout table = (TableLayout)findViewById(R.id.tableLayout);
                 int num_of_rows =table.getChildCount();
                 float[][] arr = new float[num_of_rows][num_of_rows];
+                float temp_sum=0;
                 for(int i = 0; i < num_of_rows; i++)
                 {
                     View view = table.getChildAt(i);
@@ -66,29 +69,41 @@ public class External5x5 extends AppCompatActivity {
                             myNum = 0;
                             try {
                                 myNum = Float.parseFloat(temp.getText().toString());
+                                arr[i][j]= myNum;
+                                temp_sum += myNum;
                             } catch(NumberFormatException exp) {
                                 System.out.println("Could not parse" + exp);
+                                empty_flag = true;
                             }
-                            arr[i][j]= myNum;
                         }
                     }
                 }
-                CheckBox checkBox_div = (CheckBox)findViewById(R.id.devide);
-                boolean devide = checkBox_div.isChecked();
-                filter = new Filter(arr, name,getBaseContext(), devide);
+                CheckBox checkBox_div = (CheckBox)findViewById(R.id.divide);
+                boolean divide = checkBox_div.isChecked();
 
-                Intent intent = new Intent("check_values");
-                intent.putExtra("filter",filter);
-                sendBroadcast(intent);
-                Intent closechooser = new Intent("finish_activity_filterchooser");
-                sendBroadcast(closechooser);
-                Intent closeexternal = new Intent("finish_activity_chooseexternalsize");
-                sendBroadcast(closeexternal);
-                Intent intent2 = new Intent(getBaseContext(), FilterChooser.class);
-                intent2.putExtra("imageUri", imageUri.toString());
-                intent2.putExtra("shareUri", "");
-                startActivity(intent2);
-                finish();
+                if (!empty_flag) {
+                    if (temp_sum != 0 && divide || !divide) {
+                        filter = new Filter(arr, name, getBaseContext(), divide);
+                        Intent intent = new Intent("check_values");
+                        intent.putExtra("filter", filter);
+                        sendBroadcast(intent);
+                        Intent closechooser = new Intent("finish_activity_filterchooser");
+                        sendBroadcast(closechooser);
+                        Intent closeexternal = new Intent("finish_activity_chooseexternalsize");
+                        sendBroadcast(closeexternal);
+                        Intent intent2 = new Intent(getBaseContext(), FilterChooser.class);
+                        intent2.putExtra("imageUri", imageUri.toString());
+                        intent2.putExtra("shareUri", "");
+                        startActivity(intent2);
+                        finish();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "The sum of all elements is zero.\ntry again!",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+                else
+                    Toast.makeText(getApplicationContext(), "Please fill all cells",
+                            Toast.LENGTH_LONG).show();
             }
         });
         Button reset = (Button)findViewById(R.id.reset);
@@ -117,40 +132,52 @@ public class External5x5 extends AppCompatActivity {
         preivew.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 EditText temp;
-                EditText edit_name = (EditText)findViewById(R.id.filtername);
+                EditText edit_name = (EditText) findViewById(R.id.filtername);
                 String name = edit_name.getText().toString();
                 float myNum = 0;
-                TableLayout table = (TableLayout)findViewById(R.id.tableLayout);
-                int num_of_rows =table.getChildCount();
+                float temp_sum = 0;
+                TableLayout table = (TableLayout) findViewById(R.id.tableLayout);
+                int num_of_rows = table.getChildCount();
                 float[][] arr = new float[num_of_rows][num_of_rows];
-                for(int i = 0; i < num_of_rows; i++)
-                {
+                for (int i = 0; i < num_of_rows; i++) {
                     View view = table.getChildAt(i);
                     if (view instanceof TableRow) {
                         TableRow row = (TableRow) view;
                         int num_of_cols = row.getChildCount();
-                        for(int j=0;j<row.getChildCount();j++)
-                        {
-                            temp = (EditText)row.getChildAt(j);
+                        for (int j = 0; j < row.getChildCount(); j++) {
+                            temp = (EditText) row.getChildAt(j);
                             myNum = 0;
                             try {
                                 myNum = Float.parseFloat(temp.getText().toString());
-                            } catch(NumberFormatException exp) {
+                                arr[i][j] = myNum;
+                                temp_sum += myNum;
+                            } catch (NumberFormatException exp) {
                                 System.out.println("Could not parse" + exp);
+                                empty_flag = true;
                             }
-                            arr[i][j]= myNum;
+
                         }
                     }
                 }
-                CheckBox checkBox_div = (CheckBox)findViewById(R.id.devide);
-                boolean devide = checkBox_div.isChecked();
-                filter = new Filter(arr, name,getBaseContext(), devide);
-                //Bitmap preview = bitmap.createScaledBitmap(bitmap, 600,600,true);
-                Bitmap temp_preview;
-                temp_preview = Matrix.convolution(filter.getKernel(),bitmap,filter.isDevide());
-                Drawable d = new BitmapDrawable(getResources(), temp_preview);
-                image.setImageBitmap(temp_preview);
+                CheckBox checkBox_div = (CheckBox) findViewById(R.id.divide);
+                boolean divide = checkBox_div.isChecked();
+                if (!empty_flag) {
+                    if (temp_sum != 0 && divide || !divide) {
+                        filter = new Filter(arr, name, getBaseContext(), divide);
+                        //Bitmap preview = bitmap.createScaledBitmap(bitmap, 600,600,true);
+                        Bitmap temp_preview;
+                        temp_preview = Matrix.convolution(filter.getKernel(), bitmap, filter.isDivide());
+                        Drawable d = new BitmapDrawable(getResources(), temp_preview);
+                        image.setImageBitmap(temp_preview);
+                    } else
+                        Toast.makeText(getApplicationContext(), "The sum of all elements is zero.\ntry again!",
+                                Toast.LENGTH_LONG).show();
+                }
+                else
+                Toast.makeText(getApplicationContext(), "Please fill all cells",
+                        Toast.LENGTH_LONG).show();
             }
+
         });
     }
 

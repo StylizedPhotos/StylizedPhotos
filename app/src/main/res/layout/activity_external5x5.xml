@@ -30,8 +30,7 @@
                 android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText2"
@@ -40,8 +39,7 @@
                 android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText3"
@@ -50,8 +48,7 @@
                 android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText4"
@@ -60,8 +57,7 @@
                 android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText5"
@@ -70,8 +66,7 @@
                 android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
         </TableRow>
 
         <TableRow
@@ -86,8 +81,7 @@
                 android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText7"
@@ -96,8 +90,7 @@
                 android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText8"
@@ -106,8 +99,7 @@
                 android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText9"
@@ -116,8 +108,7 @@
                 android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText10"
@@ -126,8 +117,7 @@
                 android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
         </TableRow>
 
         <TableRow
@@ -142,8 +132,7 @@
                 android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText12"
@@ -152,8 +141,7 @@
                 android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText13"
@@ -162,8 +150,7 @@
                 android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText14"
@@ -172,8 +159,7 @@
                 android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText15"
@@ -182,8 +168,7 @@
                 android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
         </TableRow>
 
         <TableRow
@@ -197,8 +182,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText17"
@@ -207,8 +191,7 @@
                 android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText18"
@@ -217,8 +200,7 @@
                 android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText19"
@@ -226,8 +208,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText20"
@@ -235,8 +216,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
         </TableRow>
 
         <TableRow
@@ -250,8 +230,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText22"
@@ -260,8 +239,7 @@
                 android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText23"
@@ -270,8 +248,7 @@
                 android:autoText="false"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText24"
@@ -279,8 +256,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
                 android:id="@+id/editText25"
@@ -288,8 +264,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:gravity="center"
-                android:inputType="number|numberSigned|numberDecimal"
-                android:text="0" />
+                android:inputType="number|numberSigned|numberDecimal" />
         </TableRow>
 
     </TableLayout>
@@ -355,13 +330,13 @@
         app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
 
     <CheckBox
-        android:id="@+id/devide"
+        android:id="@+id/divide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Devide?"
+        android:text="Divide by\nkernel sum"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/filtername"
         app:layout_constraintTop_toBottomOf="@+id/tableLayout" />

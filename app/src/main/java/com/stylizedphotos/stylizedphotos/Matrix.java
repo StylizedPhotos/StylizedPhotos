@@ -87,7 +87,8 @@ public class Matrix implements Serializable {
 
     public static Bitmap convolution(Matrix kernel, Bitmap image,boolean toSum )
     {
-        int i, j, ii, jj, m, n, mm, nn,sum=0, width=image.getWidth(), height=image.getHeight(),ker_cols=kernel.getCols(),ker_rows=kernel.getRows();
+        float sum=0;
+        int i, j, ii, jj, m, n, mm, nn, width=image.getWidth(), height=image.getHeight(),ker_cols=kernel.getCols(),ker_rows=kernel.getRows();
         int[] center = new int [2];
         float [][] ker_vals = new float[ker_rows][ker_cols];
         int new_color;
@@ -125,9 +126,9 @@ public class Matrix implements Serializable {
                         // ignore input samples which are out of bound
                         if (ii >= 0 && ii < height && jj >= 0 && jj <  width) {
                             //get all pixel value and calculate with them
-                            temp_red += ((intArray[ii*width+jj] >> 16) & 0xff) * ker_vals[mm][nn];
-                            temp_green += ((intArray[ii*width+jj] >> 8) & 0xff) * ker_vals[mm][nn];
-                            temp_blue += (intArray[ii*width+jj] & 0xff) * ker_vals[mm][nn];
+                            temp_red += (float)((intArray[ii*width+jj] >> 16) & 0xff) * ker_vals[mm][nn];
+                            temp_green += (float)((intArray[ii*width+jj] >> 8) & 0xff) * ker_vals[mm][nn];
+                            temp_blue += (float)(intArray[ii*width+jj] & 0xff) * ker_vals[mm][nn];
                             if(toSum==true)
                                 sum+=ker_vals[m][n];
                         }
@@ -137,9 +138,9 @@ public class Matrix implements Serializable {
                 //  if(sum==0)
                 // sum=1;
                 if(toSum == true) {
-                    temp_red = temp_red / sum;//to prevent sliding
-                    temp_green = temp_green / sum;//to prevent sliding
-                    temp_blue = temp_blue / sum;//to prevent sliding
+                    temp_red = (int)((float)temp_red / sum);//to prevent sliding
+                    temp_green = (int)((float)temp_green / sum);//to prevent sliding
+                    temp_blue = (int)((float)temp_blue / sum);//to prevent sliding
                 }
                 temp_red = HelpMethods.clamp((int)(temp_red + 0.5));
                 temp_green = HelpMethods.clamp((int)(temp_green + 0.5));

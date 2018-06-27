@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -80,10 +81,14 @@ public class FilterChooser extends AppCompatActivity
         filters_names.add("Color Highlight");
         Bundle extras = getIntent().getExtras();
         imageUri = Uri.parse(extras.getString("imageUri"));
+        final boolean perf = extras.getBoolean("perf");
         final Uri shareUri = Uri.parse(extras.getString("shareUri"));
         bitmap = null;  //convert the uri to a bitmap
         try {
-            bitmap = getBitmapFromUri(imageUri);
+            if(perf)
+                bitmap = HelpMethods.scaleBitmap(getBitmapFromUri(imageUri));
+            else
+                bitmap = getBitmapFromUri(imageUri);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -92,14 +97,10 @@ public class FilterChooser extends AppCompatActivity
         for(int i=0;i<filters_names.size();i++) {
             final int opcode = i;
             LinearLayout filters = (LinearLayout) findViewById(R.id.filter_layout);
-           Button but = new Button(this);
-           // ImageButton but = new ImageButton(this);
-
-
+            Button but = new Button(this);
             but.setLayoutParams(new LinearLayout.LayoutParams(400, LinearLayout.LayoutParams.MATCH_PARENT));
             but.setText(filters_names.get(i));
-
-           // preview.setDensity(1000);
+            but.setShadowLayer(50,-1,-1,Color.BLACK);
             but.setId(i);
             Buttons.add(but);
             filters.addView(but);
@@ -109,25 +110,18 @@ public class FilterChooser extends AppCompatActivity
                     Intent intent = new Intent(getBaseContext(), FilterScreen.class);
                     intent.putExtra("imageUri", imageUri.toString());
                     intent.putExtra("opcode", opcode);
+                    intent.putExtra("perf" , perf);
                     startActivityForResult(intent, RESULT_OPEN_FILTER_SCREEN);
                 }
             });
         }
 
-//        File folder = new File(this.getFilesDir(), "External Filters");
-//        if(folder.exists())
-     {
             File file_filters [] = this.getFilesDir().listFiles();
             for(int i=0;i<file_filters.length;i++) {
                 LinearLayout filters = (LinearLayout) findViewById(R.id.filter_layout);
                 Button but = new Button(this);
-                // ImageButton but = new ImageButton(this);
-
-
                 but.setLayoutParams(new LinearLayout.LayoutParams(400, LinearLayout.LayoutParams.MATCH_PARENT));
                 but.setText(file_filters[i].getName());
-
-                // preview.setDensity(1000);
                 but.setId(i+filters_names.size());
                 Buttons.add(but);
                 filters.addView(but);
@@ -151,7 +145,7 @@ public class FilterChooser extends AppCompatActivity
                 }
                 String input = text.toString();
                 final String[] external_filter_data = input.split(";");
-                //[0]=name [1]=size [2]= op [3]=ker [4]=devide(true or false)
+                //[0]=name [1]=size [2]= op [3]=ker [4]=divide(true or false)
                 String[] kernel_values = external_filter_data[3].split(",");
                 int size;
                 size = Integer.parseInt(external_filter_data[1]);
@@ -167,21 +161,19 @@ public class FilterChooser extends AppCompatActivity
                 temp_preview = Matrix.convolution(ker_mat,preview,Boolean.parseBoolean(external_filter_data[4]));
                 Drawable d = new BitmapDrawable(getResources(), temp_preview);
                 but.setBackground(d);
-
+                but.setShadowLayer(50,-1,-1,Color.BLACK);
                 but.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         Intent intent = new Intent(getBaseContext(), ExternalFilterScreen.class);
                         intent.putExtra("imageUri", imageUri.toString());
                         intent.putExtra("opcode", Integer.parseInt(external_filter_data[2]));
                         intent.putExtra("matrix", ker_mat);
-                        intent.putExtra("devide", Boolean.parseBoolean(external_filter_data[4]));
+                        intent.putExtra("divide", Boolean.parseBoolean(external_filter_data[4]));
+                        intent.putExtra("perf", perf);
                         startActivityForResult(intent, RESULT_OPEN_FILTER_SCREEN);
                     }
                 });
             }
-        }
-
-
 
         ImageButton share = (ImageButton)findViewById(R.id.sharebutton);
         share.setOnClickListener(new View.OnClickListener() {
@@ -219,7 +211,7 @@ public class FilterChooser extends AppCompatActivity
                 startActivity(intent);
             }
         });
-        Bitmap preview = bitmap.createScaledBitmap(bitmap, 100,100,true);
+        Bitmap preview = bitmap.createScaledBitmap(bitmap, 120,100,true);
         Bitmap temp_preview = preview;
         temp_preview = MeanBlur.Preview(preview);
         Drawable d = new BitmapDrawable(getResources(), temp_preview);
@@ -315,7 +307,7 @@ public class FilterChooser extends AppCompatActivity
                     external_filter_data +="," + filter.getKernel().getVal(i,j);
             }
         }
-        external_filter_data += ";" + filter.isDevide();
+        external_filter_data += ";" + filter.isDivide();
         external_filter_data+='\n';
         //here we have full data string of the filter
 
@@ -388,4 +380,6 @@ public class FilterChooser extends AppCompatActivity
             }
         });*/
     }
+
+
 }

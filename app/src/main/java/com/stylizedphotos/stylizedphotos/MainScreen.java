@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 
 import java.io.ByteArrayOutputStream;
@@ -36,8 +37,8 @@ public class MainScreen extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
-        Toolbar toolbar = findViewById(R.id.toolbar);//set toolbar to variable
-        setSupportActionBar(toolbar);//enable toolbar
+//        Toolbar toolbar = findViewById(R.id.toolbar);//set toolbar to variable
+//        setSupportActionBar(toolbar);//enable toolbar
         ImageButton GalleryButton = findViewById(R.id.imageButton2); //set gallery button to a variable
         GalleryButton.setOnClickListener(new View.OnClickListener()
         {
@@ -54,31 +55,31 @@ public class MainScreen extends AppCompatActivity
             }
         });
     }
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.settings_popup, menu);
-        menu.add(Menu.NONE, 0, Menu.NONE, "Add external filter");
-        menu.add(Menu.NONE, 1, Menu.NONE, "Remove external filter");
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case 0:
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("file/*");
-                startActivityForResult(intent, YOUR_RESULT_CODE);
-                return true;
-            case 1:
-
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+//    public boolean onCreateOptionsMenu(Menu menu)
+//    {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.settings_popup, menu);
+//        menu.add(Menu.NONE, 0, Menu.NONE, "Add external filter");
+//        menu.add(Menu.NONE, 1, Menu.NONE, "Remove external filter");
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle item selection
+//        switch (item.getItemId()) {
+//            case 0:
+//                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                intent.setType("file/*");
+//                startActivityForResult(intent, YOUR_RESULT_CODE);
+//                return true;
+//            case 1:
+//
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 
     public void CallGallery()
     {
@@ -103,10 +104,11 @@ public class MainScreen extends AppCompatActivity
             } catch (IOException e) {
                 e.printStackTrace();
             }*/
-
+            CheckBox perf = (CheckBox) findViewById(R.id.low);
             Intent intent = new Intent(this, FilterChooser.class); //creating the intent to switch to the FilterChooser activity
             intent.putExtra("imageUri", uri.toString());  //add the image to the intent
             intent.putExtra("shareUri", "");
+            intent.putExtra("perf", perf.isChecked());
             startActivityForResult(intent, RESULT_LOAD_IMAGE);  //starting the intent
         }
 
@@ -123,9 +125,11 @@ public class MainScreen extends AppCompatActivity
           /*  ByteArrayOutputStream stream = new ByteArrayOutputStream();
             imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] byteArray = stream.toByteArray();    //convert the stream to byte array*/
+            CheckBox perf = findViewById(R.id.low);
             Intent intent = new Intent(this, FilterChooser.class);  //creating the intent to switch to the FilterChooser activity
             intent.putExtra("imageUri", photoUri.toString());  //add the image to the intent
             intent.putExtra("shareUri", "");
+            intent.putExtra("perf", perf.isChecked());
             startActivityForResult(intent, RESULT_LOAD_IMAGE);  //starting the intent
         }
     }

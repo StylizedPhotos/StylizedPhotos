@@ -40,10 +40,17 @@ public class FilterScreen extends AppCompatActivity {
         setContentView(R.layout.activity_filter_screen);
         Bundle extras = getIntent().getExtras();
         int opcode = extras.getInt("opcode");
+        final boolean perf = extras.getBoolean("perf");
         final Uri imageUri = Uri.parse(extras.getString("imageUri"));
         Bitmap bitmap = null;  //convert the uri to a bitmap
         try {
-            bitmap = getBitmapFromUri(imageUri);
+
+            if(perf==true)
+            {
+                bitmap = HelpMethods.scaleBitmap( getBitmapFromUri(imageUri));
+            }
+            else
+                bitmap = getBitmapFromUri(imageUri);
             orig_image = bitmap;
         } catch (IOException e) {
             e.printStackTrace();

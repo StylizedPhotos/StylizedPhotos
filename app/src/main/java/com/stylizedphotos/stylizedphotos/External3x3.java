@@ -36,6 +36,7 @@ public class External3x3 extends AppCompatActivity {
         setContentView(R.layout.activity_external3x3);
         Bundle extras = getIntent().getExtras();
         final Uri imageUri = Uri.parse(extras.getString("imageUri"));
+
         bitmap = null;  //convert the uri to a bitmap
         try {
             bitmap = scaleBitmap(getBitmapFromUri(imageUri));
@@ -93,6 +94,7 @@ public class External3x3 extends AppCompatActivity {
                         sendBroadcast(closeexternal);
                         Intent intent2 = new Intent(getBaseContext(), FilterChooser.class);
                         intent2.putExtra("imageUri", imageUri.toString());
+                        //intent2.putExtra("perf", perf);
                         intent2.putExtra("shareUri", "");
                         startActivity(intent2);
                         finish();

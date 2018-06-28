@@ -15,6 +15,9 @@ import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -46,12 +49,16 @@ public class FilterChooser extends AppCompatActivity
     Bitmap bitmap;
     String mCurrentPhotoPath;
     Uri imageUri = null;
+    Uri shareUri=null;
+    boolean perf = false;
     private static final int RESULT_OPEN_FILTER_SCREEN = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter_chooser);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);//set toolbar to variable
+        setSupportActionBar(toolbar);//enable toolbar
         BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 
             @Override
@@ -81,8 +88,8 @@ public class FilterChooser extends AppCompatActivity
         filters_names.add("Color Highlight");
         Bundle extras = getIntent().getExtras();
         imageUri = Uri.parse(extras.getString("imageUri"));
-        final boolean perf = extras.getBoolean("perf");
-        final Uri shareUri = Uri.parse(extras.getString("shareUri"));
+        perf = extras.getBoolean("perf");
+        shareUri = Uri.parse(extras.getString("shareUri"));
         bitmap = null;  //convert the uri to a bitmap
         try {
             if(perf)
@@ -175,42 +182,6 @@ public class FilterChooser extends AppCompatActivity
                 });
             }
 
-        ImageButton share = (ImageButton)findViewById(R.id.sharebutton);
-        share.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if(shareUri.toString().equals("") == false) {
-
-                    Intent share = new Intent(Intent.ACTION_SEND);
-
-                    // If you want to share a png image only, you can do:
-                    // setType("image/png"); OR for jpeg: setType("image/jpeg");
-                    share.setType("image/png");
-
-                    // Make sure you put example png image named myImage.png in your
-                    // directory
-                    String imagePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                            + File.separator +shareUri.toString();
-
-                    File imageFileToShare = new File(imagePath);
-                    Uri photoUri = FileProvider.getUriForFile(FilterChooser.this,
-                            "com.stylizedphotos.stylizedphotos.provider", imageFileToShare);
-                    share.putExtra(Intent.EXTRA_STREAM, photoUri);
-
-                    startActivity(Intent.createChooser(share, "Share Image!"));
-                }
-                else
-                    Toast.makeText(getApplicationContext(), "Default Image wasn't changed",
-                            Toast.LENGTH_LONG).show();
-            }
-        });
-        Button addfilter = (Button)findViewById(R.id.add_external);
-        addfilter.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), ChooseExternalSize.class);
-                intent.putExtra("imageUri", imageUri.toString());
-                startActivity(intent);
-            }
-        });
         Bitmap preview = bitmap.createScaledBitmap(bitmap, 120,100,true);
         Bitmap temp_preview = preview;
         temp_preview = MeanBlur.Preview(preview);
@@ -381,5 +352,59 @@ public class FilterChooser extends AppCompatActivity
         });*/
     }
 
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.settings_popup, menu);
+        menu.add(Menu.NONE, 0, Menu.NONE, "Add filter");
+        menu.add(Menu.NONE, 1, Menu.NONE, "Remove filter");
+        menu.add(Menu.NONE, 2, Menu.NONE, "Share");
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case 0://add filter
+                Intent intent = new Intent(getBaseContext(), ChooseExternalSize.class);
+                intent.putExtra("imageUri", imageUri.toString());
+                startActivity(intent);
+                return true;
+            case 1:
+                Intent intent2 = new Intent(getBaseContext(), RemoveFilter.class);
+                intent2.putExtra("imageUri", imageUri.toString());
+                intent2.putExtra("perf", perf);
+                startActivity(intent2);
 
+                //to_delete.delete();
+                return true;
+            case 2://share image
+                if(shareUri.toString().equals("") == false) {
+
+                    Intent share = new Intent(Intent.ACTION_SEND);
+
+                    // If you want to share a png image only, you can do:
+                    // setType("image/png"); OR for jpeg: setType("image/jpeg");
+                    share.setType("image/png");
+
+                    // Make sure you put example png image named myImage.png in your
+                    // directory
+                    String imagePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                            + File.separator +shareUri.toString();
+
+                    File imageFileToShare = new File(imagePath);
+                    Uri photoUri = FileProvider.getUriForFile(FilterChooser.this,
+                            "com.stylizedphotos.stylizedphotos.provider", imageFileToShare);
+                    share.putExtra(Intent.EXTRA_STREAM, photoUri);
+
+                    startActivity(Intent.createChooser(share, "Share Image!"));
+                }
+                else
+                    Toast.makeText(getApplicationContext(), "Default Image wasn't changed",
+                            Toast.LENGTH_LONG).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+}
 }

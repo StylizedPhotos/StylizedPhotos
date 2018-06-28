@@ -40,7 +40,7 @@ public class Sharpening {
             }
         });
         TextView n1 = new TextView(filterScreen);
-        n1.setText("s1");
+        n1.setText("Strength");
         names.add(n1);
         slider_array.add(s1);
     }

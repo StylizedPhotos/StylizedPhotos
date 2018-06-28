@@ -37,8 +37,8 @@ public class MainScreen extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
-//        Toolbar toolbar = findViewById(R.id.toolbar);//set toolbar to variable
-//        setSupportActionBar(toolbar);//enable toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);//set toolbar to variable
+        setSupportActionBar(toolbar);//enable toolbar
         ImageButton GalleryButton = findViewById(R.id.imageButton2); //set gallery button to a variable
         GalleryButton.setOnClickListener(new View.OnClickListener()
         {

@@ -36,7 +36,6 @@ public abstract class HelpMethods {
         int height = bm.getHeight();
         int maxWidth = 1280;
         int maxHeight = 720;
-        //Log.v("Pictures", "Width and height are " + width + "--" + height);
 
         if (width > height) {
             // landscape
@@ -53,9 +52,6 @@ public abstract class HelpMethods {
             height = maxHeight;
             width = maxWidth;
         }
-
-        //Log.v("Pictures", "after scaling Width and height are " + width + "--" + height);
-
         bm = Bitmap.createScaledBitmap(bm, width, height, true);
         return bm;
     }

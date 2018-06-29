@@ -4,21 +4,20 @@ package com.stylizedphotos.stylizedphotos;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.support.v8.renderscript.ScriptC;
+import android.support.v8.renderscript.Allocation;
+import android.support.v8.renderscript.RenderScript;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.support.v8.renderscript.RenderScript;
-import android.support.v8.renderscript.Allocation;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class RGB {
-    public ArrayList<SeekBar> slider_array = new ArrayList<SeekBar>();
-    public ArrayList<TextView> names = new ArrayList<TextView>();
+    public ArrayList<SeekBar> slider_array = new ArrayList<>();
+    public ArrayList<TextView> names = new ArrayList<>();
     RenderScript rs;
-    FilterScreen filterScreenContext = null;
-    Context context = null;
+    private FilterScreen filterScreenContext = null;
+    private Context context = null;
     private int seek_red = 0;
     private int seek_green = 0;
     private int seek_blue = 0;
@@ -41,12 +40,10 @@ public class RGB {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
             }
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // filterScreen.RefreshImage(FilterFunction(bitmap));
             }
         });
         TextView n1 = new TextView(filterScreen);
@@ -58,7 +55,6 @@ public class RGB {
         green.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
                 MyTaskParams params = new MyTaskParams(bitmap);
                 seek_green = seekBar.getProgress();
                 params.setRed(seek_red);
@@ -69,14 +65,10 @@ public class RGB {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
             }
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
-                // new Background().execute(params);
-                //filterScreen.RefreshImage(FilterFunction(bitmap));
             }
         });
         TextView n2 = new TextView(filterScreen);
@@ -88,7 +80,6 @@ public class RGB {
         blue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
                 MyTaskParams params = new MyTaskParams(bitmap);
                 seek_blue = seekBar.getProgress();
                 params.setRed(seek_red);
@@ -99,13 +90,10 @@ public class RGB {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
             }
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
-                // new Background().execute(params);
             }
         });
         TextView n3 = new TextView(filterScreen);
@@ -170,9 +158,7 @@ public class RGB {
         Bitmap preview1 = null;
         try {
              preview1= new Background().execute(params).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
 

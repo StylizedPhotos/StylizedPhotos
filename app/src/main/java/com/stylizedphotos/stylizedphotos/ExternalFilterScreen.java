@@ -8,15 +8,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -39,15 +40,19 @@ public class ExternalFilterScreen extends AppCompatActivity implements Serializa
         setContentView(R.layout.activity_external_filter_screen);
 
         Bundle extras = getIntent().getExtras();
+        assert extras != null;
         int opcode = extras.getInt("opcode");
         final Uri imageUri = Uri.parse(extras.getString("imageUri"));
         final Matrix kernel = (Matrix)extras.getSerializable("matrix");
         final boolean divide = (boolean)extras.get("divide");
         final boolean perf = (boolean)extras.get("perf");
+        final String name = extras.getString("name");
+        TextView headline = findViewById(R.id.headline);
+        headline.setText(name);
         Bitmap bitmap = null;  //convert the uri to a bitmap
         try {
 
-            if(perf==true)
+            if (perf)
             {
                 bitmap = HelpMethods.scaleBitmap( getBitmapFromUri(imageUri));
             }
@@ -58,18 +63,20 @@ public class ExternalFilterScreen extends AppCompatActivity implements Serializa
             e.printStackTrace();
         }
         RefreshImage(bitmap);
-        Button save = (Button)findViewById(R.id.saveButton);
+        Button save = findViewById(R.id.saveButton);
         save.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 SaveImage();
             }
         });
-        Button reset = (Button)findViewById(R.id.resetButton);
+        Button reset = findViewById(R.id.resetButton);
         reset.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 ResetImage();
             }
         });
+        assert kernel != null;
+        assert bitmap != null;
         RefreshImage(Matrix.convolution(kernel,bitmap,divide));
 
     }
@@ -77,21 +84,23 @@ public class ExternalFilterScreen extends AppCompatActivity implements Serializa
     private Bitmap getBitmapFromUri(Uri uri) throws IOException {
         ParcelFileDescriptor parcelFileDescriptor =
                 getContentResolver().openFileDescriptor(uri, "r");
-        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+        assert parcelFileDescriptor != null;
+        FileDescriptor fileDescriptor;
+        fileDescriptor = parcelFileDescriptor.getFileDescriptor();
         Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
         parcelFileDescriptor.close();
         return image;
     }
     public void RefreshImage (Bitmap bitmap)
     {
-        image_view = (ImageView) findViewById(R.id.imageViewFilter);
+        image_view = findViewById(R.id.imageViewFilter);
         image_view.setImageBitmap(bitmap);
     }
 
     public void SaveImage()
     {
         File file;
-        String myPath = "";
+        String myPath;
         SharedPreferences pref = getSharedPreferences("save data", MODE_PRIVATE);
         SharedPreferences.Editor editor = getSharedPreferences("save data", MODE_PRIVATE).edit();
         int counter = pref.getInt("counter",0);
@@ -106,10 +115,6 @@ public class ExternalFilterScreen extends AppCompatActivity implements Serializa
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED)//if no permission
         {
-
-
-
-
             File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) +
                     File.separator + "Stylized Photos");
             boolean success = true;
@@ -117,7 +122,7 @@ public class ExternalFilterScreen extends AppCompatActivity implements Serializa
                 success = folder.mkdir();
             }
 
-            if(success==true)
+            if (success)
             {file = new File(Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_PICTURES), "Stylized Photos"+ File.separator +"StylizedPhotos_" + counter + ".png");
                 myPath = "Stylized Photos"+ File.separator +"StylizedPhotos_" + counter + ".png";
@@ -129,7 +134,7 @@ public class ExternalFilterScreen extends AppCompatActivity implements Serializa
                 myPath = "Stylized Photos"+ File.separator +"StylizedPhotos_" + counter + ".png";
             }
             try {
-                OutputStream stream = null;
+                OutputStream stream;
                 stream = new FileOutputStream(file);
                 Bitmap image = ((BitmapDrawable) image_view.getDrawable()).getBitmap();
                 image.compress(Bitmap.CompressFormat.PNG, 100, stream);

@@ -17,19 +17,17 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class ColorRemoval {
-    public ArrayList<SeekBar> slider_array = new ArrayList<SeekBar>();
-    public ArrayList<TextView> names = new ArrayList<TextView>();
+    public ArrayList<SeekBar> slider_array = new ArrayList<>();
+    public ArrayList<TextView> names = new ArrayList<>();
     RenderScript rs;
-    FilterScreen filterScreenContext = null;
-    Context context = null;
+    private FilterScreen filterScreenContext = null;
+    private Context context = null;
     private float seek_hue = 0;
     private float seek_range = 0;
     private float[][] floatArrayOrigin;
     private float[][] floatArrayOut;
     private float [] float1dArray;
     private float [] float1dArrayout;
-
-
 
     public ColorRemoval(final Bitmap bitmap, final FilterScreen filterScreen){
         filterScreenContext = filterScreen;
@@ -55,23 +53,14 @@ public class ColorRemoval {
                 params.setHue(seek_hue);
                 params.setRange(seek_range);
                 new ColorRemoval.Background().execute(params);
-
-
-//                DominantColorRemoval.MyTaskParams params = new DominantColorRemoval.MyTaskParams(bitmap);
-//                seek_range = seekBar.getProgress();
-//                params.setHue(seek_hue);
-//                params.setRange(seek_range);
-//                new DominantColorRemoval.Background().execute(params);
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
             }
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
             }
         });
         TextView n1 = new TextView(filterScreen);
@@ -86,7 +75,6 @@ public class ColorRemoval {
         range.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
                 ColorRemoval.MyTaskParams params = new ColorRemoval.MyTaskParams(bitmap);
                 seek_range = seekBar.getProgress();
                 params.setHue(seek_hue);
@@ -96,12 +84,11 @@ public class ColorRemoval {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
             }
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                            }
+            }
         });
         TextView n2 = new TextView(filterScreen);
         n2.setText("Range");
@@ -143,7 +130,6 @@ public class ColorRemoval {
             loc_bitmap = toRGB(floatArrayOut,loc_bitmap.getWidth(),loc_bitmap.getHeight());
             return loc_bitmap;
         }
-
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             if(filterScreenContext!=null)
@@ -208,12 +194,9 @@ public class ColorRemoval {
         Bitmap preview1 = null;
         try {
             preview1= new Background().execute(params).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-
         while (preview1 == null) {}
         return preview1;
     }

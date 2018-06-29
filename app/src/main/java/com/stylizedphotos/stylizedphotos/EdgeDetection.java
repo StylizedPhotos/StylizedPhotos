@@ -1,24 +1,19 @@
 package com.stylizedphotos.stylizedphotos;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.renderscript.Allocation;
 import android.renderscript.RenderScript;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 public class EdgeDetection {
-    public ArrayList<SeekBar> slider_array = new ArrayList<SeekBar>();
-    public ArrayList<TextView> names = new ArrayList<TextView>();
+    public ArrayList<SeekBar> slider_array = new ArrayList<>();
+    public ArrayList<TextView> names = new ArrayList<>();
     RenderScript rs;
-    FilterScreen filterScreenContext;
+    private FilterScreen filterScreenContext;
 
     EdgeDetection(final Bitmap bitmap, final FilterScreen filterScreen) {
         filterScreenContext = filterScreen;
@@ -28,20 +23,15 @@ public class EdgeDetection {
         s1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                //  MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
-                // new Background().execute(params);
-
                 filterScreen.RefreshImage(FilterFunction(bitmap, seekBar.getProgress()));
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
             }
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // filterScreen.RefreshImage(FilterFunction(bitmap));
             }
         });
         TextView n1 = new TextView(filterScreen);
@@ -101,8 +91,6 @@ public class EdgeDetection {
         protected Bitmap doInBackground(EdgeDetection.MyTaskParams... params) {
             Bitmap loc_bitmap = params[0].bitmap.copy(params[0].bitmap.getConfig(), true);
             Allocation alloc = Allocation.createFromBitmap(rs, loc_bitmap);
-            // ScriptC_parallel parallel_script = new ScriptC_parallel(rs);
-            //parallel_script.forEach_parallel(alloc);
             alloc.copyTo(loc_bitmap);
             return loc_bitmap;
         }
@@ -123,22 +111,6 @@ public class EdgeDetection {
         }
     }
 
-
-    private Bitmap getGrayscale_ColorMatrixColorFilter(Bitmap src){
-        int width = src.getWidth();
-        int height = src.getHeight();
-
-        Bitmap dest = Bitmap.createBitmap(width, height,
-        Bitmap.Config.RGB_565);
-        Canvas canvas = new Canvas(dest);
-        Paint paint = new Paint();
-        ColorMatrix colorMatrix = new ColorMatrix();
-        colorMatrix.setSaturation(0); //value of 0 maps the color to gray-scale
-        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorMatrix);
-        paint.setColorFilter(filter);
-        canvas.drawBitmap(src, 0, 0, paint);
-        return dest;
-    }
     public static Bitmap Preview(Bitmap image)
     {
         float arr[][]= {{0, -1, 0,},

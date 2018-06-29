@@ -1,11 +1,6 @@
 package com.stylizedphotos.stylizedphotos;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
 
 import java.io.Serializable;
 
@@ -14,7 +9,6 @@ public class Matrix implements Serializable {
 
     private int rows;
     private int cols;
-    //private float[] array1D;
 
     public float[][] getMatrix() {
         return matrix;
@@ -24,42 +18,7 @@ public class Matrix implements Serializable {
         return matrix[i][j];
     }
 
-    public void setMatrix(float[][] arr)
-    {
-        int k=0;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++,k++)
-            {
-                setVal(i, j, arr[i][j]);
-                //array1D[k] = arr[i][j];
-            }
-        }
-    }
-
-    public void setVal(int i, int j, float val) {
-        matrix[i][j] = val;
-    }
-
     private float[][] matrix;
-
-    public int getRows() {
-        return rows;
-    }
-//    public float[] getArray1D() {
-//        return array1D;
-//    }
-
-    public void setRows(int rows) {
-        this.rows = rows;
-    }
-
-    public int getCols() {
-        return cols;
-    }
-
-    public void setCols(int cols) {
-        this.cols = cols;
-    }
 
     Matrix(int rows, int cols, float[][] arr) {
         matrix = new float[rows][cols];
@@ -67,23 +26,6 @@ public class Matrix implements Serializable {
         this.cols = cols;
         setMatrix(arr);
     }
-
-    void MatrixByScalar(int k) {
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                this.setVal(i, j, this.getVal(i, j) * k);
-            }
-        }
-    }
-    //TODO add operations
-
-    private static int[] find_center(Matrix mat) {
-        int[] result= new int[2];
-        result[1] = (mat.getCols() - 1) / 2;
-        result[0] = (mat.getRows() - 1) / 2; //2,3
-        return result;
-    }
-
 
     public static Bitmap convolution(Matrix kernel, Bitmap image,boolean toSum )
     {
@@ -99,10 +41,7 @@ public class Matrix implements Serializable {
         // image
         double[] floatArray = new double[image.getWidth()*image.getHeight()];// 1d array of ints to get image
         image.getPixels(intArray, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight()); // pixels to int array
-        /*for(i=0;i<intArray.length;i++)
-        {
-            floatArray[i] = (float)intArray[i]/255;
-        }*/
+
         for(i=0;i<ker_rows;i++)
             for(j=0;j<ker_cols;j++)
                 ker_vals[i][j]=kernel.getVal(i,j);
@@ -129,7 +68,7 @@ public class Matrix implements Serializable {
                             temp_red += (float)((intArray[ii*width+jj] >> 16) & 0xff) * ker_vals[mm][nn];
                             temp_green += (float)((intArray[ii*width+jj] >> 8) & 0xff) * ker_vals[mm][nn];
                             temp_blue += (float)(intArray[ii*width+jj] & 0xff) * ker_vals[mm][nn];
-                            if(toSum==true)
+                            if (toSum)
                                 sum+=ker_vals[m][n];
                         }
                     }
@@ -137,7 +76,7 @@ public class Matrix implements Serializable {
                 //set the new value
                 //  if(sum==0)
                 // sum=1;
-                if(toSum == true) {
+                if (toSum) {
                     temp_red = (int)((float)temp_red / sum);//to prevent sliding
                     temp_green = (int)((float)temp_green / sum);//to prevent sliding
                     temp_blue = (int)((float)temp_blue / sum);//to prevent sliding
@@ -157,6 +96,50 @@ public class Matrix implements Serializable {
         Bitmap out2 = Bitmap.createBitmap(outArray, width, height, Bitmap.Config.ARGB_8888);
 
         return out2;
+    }
+
+    private static int[] find_center(Matrix mat) {
+        int[] result = new int[2];
+        result[1] = (mat.getCols() - 1) / 2;
+        result[0] = (mat.getRows() - 1) / 2; //2,3
+        return result;
+    }
+
+    public void setMatrix(float[][] arr) {
+        int k = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++, k++) {
+                setVal(i, j, arr[i][j]);
+            }
+        }
+    }
+
+    private void setVal(int i, int j, float val) {
+        matrix[i][j] = val;
+    }
+
+    public int getCols() {
+        return cols;
+    }
+
+    public void setCols(int cols) {
+        this.cols = cols;
+    }
+
+    void MatrixByScalar(int k) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                this.setVal(i, j, this.getVal(i, j) * k);
+            }
+        }
+    }
+
+    private int getRows() {
+        return rows;
+    }
+
+    public void setRows(int rows) {
+        this.rows = rows;
     }
 }
 

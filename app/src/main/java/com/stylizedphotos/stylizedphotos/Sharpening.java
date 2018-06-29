@@ -10,10 +10,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class Sharpening {
-    public ArrayList<SeekBar> slider_array = new ArrayList<SeekBar>();
-    public ArrayList<TextView> names = new ArrayList<TextView>();
+    public ArrayList<SeekBar> slider_array = new ArrayList<>();
+    public ArrayList<TextView> names = new ArrayList<>();
     RenderScript rs;
-    FilterScreen filterScreenContext;
+    private FilterScreen filterScreenContext;
 
     Sharpening(final Bitmap bitmap, final FilterScreen filterScreen) {
         filterScreenContext = filterScreen;
@@ -23,20 +23,15 @@ public class Sharpening {
         s1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                //  MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
-                // new Background().execute(params);
-
                 filterScreen.RefreshImage(FilterFunction(bitmap,seekBar.getProgress()));
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
             }
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // filterScreen.RefreshImage(FilterFunction(bitmap));
             }
         });
         TextView n1 = new TextView(filterScreen);
@@ -96,8 +91,6 @@ public class Sharpening {
         protected Bitmap doInBackground(Sharpening.MyTaskParams... params) {
             Bitmap loc_bitmap = params[0].bitmap.copy(params[0].bitmap.getConfig(), true);
             Allocation alloc = Allocation.createFromBitmap(rs, loc_bitmap);
-            // ScriptC_parallel parallel_script = new ScriptC_parallel(rs);
-            //parallel_script.forEach_parallel(alloc);
             alloc.copyTo(loc_bitmap);
             return loc_bitmap;
         }

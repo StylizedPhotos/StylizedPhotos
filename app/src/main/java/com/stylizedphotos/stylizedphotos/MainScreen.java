@@ -1,25 +1,18 @@
 package com.stylizedphotos.stylizedphotos;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,7 +21,6 @@ public class MainScreen extends AppCompatActivity
 {
     private static final int RESULT_LOAD_IMAGE = 2;
     private static final int REQUEST_IMAGE_CAPTURE = 3;
-    private static final int YOUR_RESULT_CODE =4;
     Uri photoUri = null;
     String mCurrentPhotoPath;
 
@@ -55,31 +47,6 @@ public class MainScreen extends AppCompatActivity
             }
         });
     }
-//    public boolean onCreateOptionsMenu(Menu menu)
-//    {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.settings_popup, menu);
-//        menu.add(Menu.NONE, 0, Menu.NONE, "Add external filter");
-//        menu.add(Menu.NONE, 1, Menu.NONE, "Remove external filter");
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle item selection
-//        switch (item.getItemId()) {
-//            case 0:
-//                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//                intent.setType("file/*");
-//                startActivityForResult(intent, YOUR_RESULT_CODE);
-//                return true;
-//            case 1:
-//
-//                return true;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
 
     public void CallGallery()
     {
@@ -88,23 +55,11 @@ public class MainScreen extends AppCompatActivity
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-       // super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data.getData() != null) {
         //checking if its the gallery intent
             Uri uri = data.getData();   //get the data into a local variable
-            /*try {
-                Bitmap bitmap = getBitmapFromUri(uri);  //convert the uri to a bitmap
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                byte[] byteArray = stream.toByteArray();    //convert the stream to byte array
-                Intent intent = new Intent(this, FilterChooser.class); //creating the intent to switch to the FilterChooser activity
-                intent.putExtra("picture", byteArray);  //add the image to the intent
-                startActivityForResult(intent, RESULT_LOAD_IMAGE);  //starting the intent
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
-            CheckBox perf = (CheckBox) findViewById(R.id.low);
+            CheckBox perf = findViewById(R.id.low);
             Intent intent = new Intent(this, FilterChooser.class); //creating the intent to switch to the FilterChooser activity
             intent.putExtra("imageUri", uri.toString());  //add the image to the intent
             intent.putExtra("shareUri", "");
@@ -114,17 +69,6 @@ public class MainScreen extends AppCompatActivity
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
         //checking if its the camera intent
-          /*  Bundle extras = data.getExtras();   //get the image in an exrta type
-            Bitmap imageBitmap = (Bitmap) extras.get("data");   //converting to bitmap*/
-            try
-            {//needs to be delleted
-                Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),Uri.parse(mCurrentPhotoPath));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-          /*  ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] byteArray = stream.toByteArray();    //convert the stream to byte array*/
             CheckBox perf = findViewById(R.id.low);
             Intent intent = new Intent(this, FilterChooser.class);  //creating the intent to switch to the FilterChooser activity
             intent.putExtra("imageUri", photoUri.toString());  //add the image to the intent

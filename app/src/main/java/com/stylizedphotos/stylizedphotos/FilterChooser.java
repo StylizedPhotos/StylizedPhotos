@@ -20,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -28,20 +27,15 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class FilterChooser extends AppCompatActivity
 {
-    //int number_of_filters=8;// a constant that change when the user add an external filter
-    //private ImageButton mImageButton;
     ArrayList<String> filters_names = new ArrayList<>();
     ArrayList<Button> Buttons = new ArrayList<>();
     ArrayList<Filter> external_filters = new ArrayList<>();
@@ -64,9 +58,9 @@ public class FilterChooser extends AppCompatActivity
             @Override
             public void onReceive(Context arg0, Intent intent) {
                 String action = intent.getAction();
+                assert action != null;
                 if (action.equals("finish_activity_filterchooser")) {
                     finish();
-                    // DO WHATEVER YOU WANT.
                 }
                 if(intent.getAction().equals("check_values"))
                 {
@@ -87,6 +81,7 @@ public class FilterChooser extends AppCompatActivity
         filters_names.add("Color Removal");
         filters_names.add("Color Highlight");
         Bundle extras = getIntent().getExtras();
+        assert extras != null;
         imageUri = Uri.parse(extras.getString("imageUri"));
         perf = extras.getBoolean("perf");
         shareUri = Uri.parse(extras.getString("shareUri"));
@@ -99,11 +94,11 @@ public class FilterChooser extends AppCompatActivity
         } catch (IOException e) {
             e.printStackTrace();
         }
-        image = (ImageView) findViewById(R.id.imageViewFilter);
+        image = findViewById(R.id.imageViewFilter);
         image.setImageBitmap(bitmap);
         for(int i=0;i<filters_names.size();i++) {
             final int opcode = i;
-            LinearLayout filters = (LinearLayout) findViewById(R.id.filter_layout);
+            LinearLayout filters = findViewById(R.id.filter_layout);
             Button but = new Button(this);
             but.setLayoutParams(new LinearLayout.LayoutParams(400, LinearLayout.LayoutParams.MATCH_PARENT));
             but.setText(filters_names.get(i));
@@ -125,7 +120,7 @@ public class FilterChooser extends AppCompatActivity
 
             File file_filters [] = this.getFilesDir().listFiles();
             for(int i=0;i<file_filters.length;i++) {
-                LinearLayout filters = (LinearLayout) findViewById(R.id.filter_layout);
+                LinearLayout filters = findViewById(R.id.filter_layout);
                 Button but = new Button(this);
                 but.setLayoutParams(new LinearLayout.LayoutParams(400, LinearLayout.LayoutParams.MATCH_PARENT));
                 but.setText(file_filters[i].getName());
@@ -137,16 +132,11 @@ public class FilterChooser extends AppCompatActivity
                 try {
                     File file = file_filters[i];
                     BufferedReader br = new BufferedReader(new FileReader(file));
-                    String line="";
+                    String line;
                     if ((line = br.readLine()) != null)
                        temp_line += line;
                     text.append(temp_line);
-                   /* while ((line = br.readLine()) != null) {
-                        text.append(line);
-                    }*/
                     br.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -163,8 +153,8 @@ public class FilterChooser extends AppCompatActivity
                         kernel[k][j] = Float.parseFloat(kernel_values[k*size+j]);//get from 1d string array to 2d float
                 final Matrix ker_mat = new Matrix(size,size,kernel);
 
-                Bitmap preview = bitmap.createScaledBitmap(bitmap, 100,100,true);
-                Bitmap temp_preview = preview;
+                Bitmap preview = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
+                Bitmap temp_preview;
                 temp_preview = Matrix.convolution(ker_mat,preview,Boolean.parseBoolean(external_filter_data[4]));
                 Drawable d = new BitmapDrawable(getResources(), temp_preview);
                 but.setBackground(d);
@@ -173,6 +163,7 @@ public class FilterChooser extends AppCompatActivity
                     public void onClick(View v) {
                         Intent intent = new Intent(getBaseContext(), ExternalFilterScreen.class);
                         intent.putExtra("imageUri", imageUri.toString());
+                        intent.putExtra("name", external_filter_data[0]);
                         intent.putExtra("opcode", Integer.parseInt(external_filter_data[2]));
                         intent.putExtra("matrix", ker_mat);
                         intent.putExtra("divide", Boolean.parseBoolean(external_filter_data[4]));
@@ -182,7 +173,7 @@ public class FilterChooser extends AppCompatActivity
                 });
             }
 
-        Bitmap preview = bitmap.createScaledBitmap(bitmap, 120,100,true);
+        Bitmap preview = Bitmap.createScaledBitmap(bitmap, 120, 100, true);
         Bitmap temp_preview = preview;
         temp_preview = MeanBlur.Preview(preview);
         Drawable d = new BitmapDrawable(getResources(), temp_preview);
@@ -219,15 +210,12 @@ public class FilterChooser extends AppCompatActivity
         temp_preview = highlight.Preview(preview);
         d = new BitmapDrawable(getResources(), temp_preview);
         Buttons.get(7).setBackground(d);
-        //but.setBackground(d);
-        //Button blurbut = (Button)findViewById(R.1);
-        //Button FilterButton = (Button) findViewById(R.id.button1);
-
     }
 
     private Bitmap getBitmapFromUri(Uri uri)throws IOException {
         ParcelFileDescriptor parcelFileDescriptor =
                 getContentResolver().openFileDescriptor(uri, "r");
+        assert parcelFileDescriptor != null;
         FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
         Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
         parcelFileDescriptor.close();
@@ -236,7 +224,7 @@ public class FilterChooser extends AppCompatActivity
 
     public void RefreshImage (Bitmap bitmap)
     {
-        image = (ImageView) findViewById(R.id.imageViewFilter);
+        image = findViewById(R.id.imageViewFilter);
         image.setImageBitmap(bitmap);
         this.bitmap = bitmap;
     }
@@ -281,14 +269,6 @@ public class FilterChooser extends AppCompatActivity
         external_filter_data += ";" + filter.isDivide();
         external_filter_data+='\n';
         //here we have full data string of the filter
-
-//        File folder = new File(this.getFilesDir(), "External Filters");
-//        if(!folder.exists())
-//        {
-//            folder.mkdirs();
-//        }
-        //folder created
-
         File filter_text = new File(this.getFilesDir(), filter.getName());//new file type with the name of the filter(not on disk)
         if(!filter_text.exists()) {
             try
@@ -300,20 +280,7 @@ public class FilterChooser extends AppCompatActivity
                 Toast.makeText(this, "Error saving filter", Toast.LENGTH_SHORT).show();
             }
         }
-
-
-
-
-
-        //String filename = "myfile";
-       // String fileContents = "Hello world!";
         FileOutputStream outputStream;
-
-//        try (PrintWriter p = new PrintWriter(new FileOutputStream(this.getFilesDir()+filter.getName()+".txt", true))) {
-//            p.println(external_filter_data);
-//        } catch (FileNotFoundException e1) {
-//            e1.printStackTrace();
-//        }
         try {
             outputStream = openFileOutput(filter.getName(), Context.MODE_PRIVATE);
             outputStream.write(external_filter_data.getBytes());
@@ -323,33 +290,6 @@ public class FilterChooser extends AppCompatActivity
             e.printStackTrace();
             Toast.makeText(this, "Error: Filter cannot be created", Toast.LENGTH_SHORT).show();
         }
-
-
-
-
-        //external_filters.add(filter);
-        /*LinearLayout filters = (LinearLayout) findViewById(R.id.filter_layout);
-        Button but = new Button(this);
-        // ImageButton but = new ImageButton(this);
-
-
-        but.setLayoutParams(new LinearLayout.LayoutParams(400, LinearLayout.LayoutParams.MATCH_PARENT));
-        but.setText(filter.getName());
-
-        // preview.setDensity(1000);
-        but.setId(filter.getOp_code());
-        Buttons.add(but);
-        filters.addView(but);
-
-        but.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), ExternalFilterScreen.class);
-                intent.putExtra("imageUri", imageUri.toString());
-                intent.putExtra("opcode", filter.getOp_code());
-                intent.putExtra("matrix", filter.getKernel());
-                startActivityForResult(intent, RESULT_OPEN_FILTER_SCREEN);
-            }
-        });*/
     }
 
     public boolean onCreateOptionsMenu(Menu menu)
@@ -368,30 +308,21 @@ public class FilterChooser extends AppCompatActivity
             case 0://add filter
                 Intent intent = new Intent(getBaseContext(), ChooseExternalSize.class);
                 intent.putExtra("imageUri", imageUri.toString());
+                intent.putExtra("perf", perf);
                 startActivity(intent);
                 return true;
-            case 1:
+            case 1://remove filter
                 Intent intent2 = new Intent(getBaseContext(), RemoveFilter.class);
                 intent2.putExtra("imageUri", imageUri.toString());
                 intent2.putExtra("perf", perf);
                 startActivity(intent2);
-
-                //to_delete.delete();
                 return true;
             case 2://share image
-                if(shareUri.toString().equals("") == false) {
-
+                if (!shareUri.toString().equals("")) {
                     Intent share = new Intent(Intent.ACTION_SEND);
-
-                    // If you want to share a png image only, you can do:
-                    // setType("image/png"); OR for jpeg: setType("image/jpeg");
                     share.setType("image/png");
-
-                    // Make sure you put example png image named myImage.png in your
-                    // directory
                     String imagePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
                             + File.separator +shareUri.toString();
-
                     File imageFileToShare = new File(imagePath);
                     Uri photoUri = FileProvider.getUriForFile(FilterChooser.this,
                             "com.stylizedphotos.stylizedphotos.provider", imageFileToShare);

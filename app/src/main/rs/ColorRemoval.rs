@@ -14,7 +14,6 @@ void root(const uchar4 *in, uchar4 *out, uint32_t x, uint32_t y) {
     float temp_saturation =  rsGetElementAt_float(inarray, index+1);
     float temp_value =  rsGetElementAt_float(inarray, index+2);
 
-
    if(temp_hue<=hue+range && temp_hue>=hue-range)
        rsSetElementAt_float(outarray, 0, index+1);
     else

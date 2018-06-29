@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.RenderScript;
-import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -18,19 +17,17 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class ColorHighlight {
-    public ArrayList<SeekBar> slider_array = new ArrayList<SeekBar>();
-    public ArrayList<TextView> names = new ArrayList<TextView>();
+    public ArrayList<SeekBar> slider_array = new ArrayList<>();
+    public ArrayList<TextView> names = new ArrayList<>();
     RenderScript rs;
-    FilterScreen filterScreenContext = null;
-    Context context = null;
+    private FilterScreen filterScreenContext = null;
+    private Context context = null;
     private float seek_hue = 0;
     private float seek_range = 0;
     private float[][] floatArrayOrigin;
     private float[][] floatArrayOut;
     private float [] float1dArray;
     private float [] float1dArrayout;
-
-
 
     public ColorHighlight (final Bitmap bitmap, final FilterScreen filterScreen){
         filterScreenContext = filterScreen;
@@ -60,12 +57,10 @@ public class ColorHighlight {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
             }
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // filterScreen.RefreshImage(FilterFunction(bitmap));
             }
         });
         TextView n1 = new TextView(filterScreen);
@@ -80,7 +75,6 @@ public class ColorHighlight {
         range.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
                 ColorHighlight.MyTaskParams params = new ColorHighlight.MyTaskParams(bitmap);
                 seek_range = seekBar.getProgress();
                 params.setHue(seek_hue);
@@ -90,14 +84,10 @@ public class ColorHighlight {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
             }
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
-                // new Background().execute(params);
-                //filterScreen.RefreshImage(FilterFunction(bitmap));
             }
         });
         TextView n2 = new TextView(filterScreen);
@@ -137,7 +127,6 @@ public class ColorHighlight {
                 floatArrayOut[i][1]=float1dArrayout[j+1];
                 floatArrayOut[i][2]=float1dArrayout[j+2];
             }
-
             loc_bitmap = toRGB(floatArrayOut,loc_bitmap.getWidth(),loc_bitmap.getHeight());
             return loc_bitmap;
         }
@@ -206,12 +195,9 @@ public class ColorHighlight {
         Bitmap preview1 = null;
         try {
             preview1= new Background().execute(params).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-
         while (preview1 == null) {}
         return preview1;
     }

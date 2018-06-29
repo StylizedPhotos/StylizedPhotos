@@ -10,10 +10,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class GaussianBlur {
-    public ArrayList<SeekBar> slider_array = new ArrayList<SeekBar>();
-    public ArrayList<TextView> names = new ArrayList<TextView>();
+    public ArrayList<SeekBar> slider_array = new ArrayList<>();
+    public ArrayList<TextView> names = new ArrayList<>();
     RenderScript rs;
-    FilterScreen filterScreenContext;
+    private FilterScreen filterScreenContext;
 
     GaussianBlur(final Bitmap bitmap, final FilterScreen filterScreen) {
         filterScreenContext = filterScreen;
@@ -23,20 +23,15 @@ public class GaussianBlur {
         s1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                //  MyTaskParams params = new MyTaskParams(bitmap,seekBar.getProgress());
-                // new Background().execute(params);
-
                 filterScreen.RefreshImage(FilterFunction(bitmap));
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
             }
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // filterScreen.RefreshImage(FilterFunction(bitmap));
             }
         });
         TextView n1 = new TextView(filterScreen);
@@ -47,29 +42,11 @@ public class GaussianBlur {
 
     private static Bitmap FilterFunction(Bitmap image)
     {
-        //float arr3[][] = {  {1,2,1},
-        //                   {2,4,2},
-        //                   {1,4,1}};
-        //float arr1[][] = {{1},{4},{7},{4},{1}};
-        //float arr2[][] = {{1,4,7,4,1}};
         float arr1[][] = {{1},{76},{1992},{20199},{80576},{127641},{80576},{20199},{1992},{76},{1}};
         float arr2[][] = {{1,76,1992,20199,80576,127641,80576,20199,1992,76,1}};
         Matrix ker1 = new Matrix(11,1,arr1);
         Matrix ker2 = new Matrix(1,11,arr2);
         return Matrix.convolution(ker2, Matrix.convolution(ker1,image,true),true);
-
-
-        /*
-        Bitmap loc_bitmap = image.copy(image.getConfig(), true);
-        for (int i=0;i<loc_bitmap.getHeight();i++)
-        {
-            for (int j=0;j<loc_bitmap.getWidth();j++)
-            {
-                loc_bitmap.setPixel(j,i,0xffffff00);
-            }
-        }
-        return loc_bitmap;
-        */
     }
 
     private void RefreshImage(Bitmap bitmap) {
@@ -81,8 +58,6 @@ public class GaussianBlur {
         protected Bitmap doInBackground(GaussianBlur.MyTaskParams... params) {
             Bitmap loc_bitmap = params[0].bitmap.copy(params[0].bitmap.getConfig(), true);
             Allocation alloc = Allocation.createFromBitmap(rs, loc_bitmap);
-           // ScriptC_parallel parallel_script = new ScriptC_parallel(rs);
-            //parallel_script.forEach_parallel(alloc);
             alloc.copyTo(loc_bitmap);
             return loc_bitmap;
         }

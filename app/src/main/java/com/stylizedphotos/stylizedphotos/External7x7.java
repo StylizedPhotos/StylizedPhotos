@@ -78,6 +78,9 @@ public class External7x7 extends AppCompatActivity {
                 }
                 CheckBox checkBox_div = findViewById(R.id.divide);
                 boolean divide = checkBox_div.isChecked();
+                EditText filtername = findViewById(R.id.filtername);
+                if (filtername.getText().toString().equals(""))
+                    empty_flag = true;
                 if (!empty_flag) {
                     if (temp_sum != 0 && divide || !divide) {
                         filter = new Filter(arr, name, getBaseContext(), divide);

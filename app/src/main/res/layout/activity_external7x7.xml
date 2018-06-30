@@ -452,7 +452,6 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:gravity="center"
-                android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 android:inputType="number|numberSigned|numberDecimal" />
 
             <EditText
@@ -532,6 +531,7 @@
         android:ems="10"
         android:inputType="text"
         android:text="Filter name"
+        android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         app:layout_constraintBottom_toTopOf="@+id/imagePreview"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tableLayout" />

@@ -44,6 +44,7 @@ public class FilterChooser extends AppCompatActivity
     String mCurrentPhotoPath;
     Uri imageUri = null;
     Uri shareUri=null;
+    BroadcastReceiver broadcastReceiver = null;
     boolean perf = false;
     private static final int RESULT_OPEN_FILTER_SCREEN = 2;
     @Override
@@ -53,13 +54,14 @@ public class FilterChooser extends AppCompatActivity
 
         Toolbar toolbar = findViewById(R.id.toolbar);//set toolbar to variable
         setSupportActionBar(toolbar);//enable toolbar
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        broadcastReceiver = new BroadcastReceiver() {
 
             @Override
             public void onReceive(Context arg0, Intent intent) {
                 String action = intent.getAction();
                 assert action != null;
                 if (action.equals("finish_activity_filterchooser")) {
+                    unregisterReceiver(broadcastReceiver);
                     finish();
                 }
                 if(intent.getAction().equals("check_values"))

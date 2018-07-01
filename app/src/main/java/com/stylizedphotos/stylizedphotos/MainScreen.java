@@ -67,7 +67,7 @@ public class MainScreen extends AppCompatActivity
             startActivityForResult(intent, RESULT_LOAD_IMAGE);  //starting the intent
         }
 
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && photoUri != null) {
         //checking if its the camera intent
             CheckBox perf = findViewById(R.id.low);
             Intent intent = new Intent(this, FilterChooser.class);  //creating the intent to switch to the FilterChooser activity
